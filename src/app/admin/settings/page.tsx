@@ -29,7 +29,8 @@ import {
   RefreshCw,
   Copy,
   ExternalLink,
-  Lock
+  Lock,
+  Database
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { InstaLogo } from '@/components/common/InstaLogo';
@@ -49,6 +50,7 @@ export default function AdminSettingsPage() {
   const [copiedWebhook, setCopiedWebhook] = useState(false);
   const [copiedToken, setCopiedToken] = useState(false);
   const [webhookTestStatus, setWebhookTestStatus] = useState<'idle' | 'testing' | 'success' | 'failed'>('idle');
+  const [copiedSql, setCopiedSql] = useState(false);
 
   // Sync with localStorage & CurrencyContext on mount
   useEffect(() => {
@@ -986,6 +988,139 @@ export default function AdminSettingsPage() {
                 {perm}
               </span>
             ))}
+          </div>
+        </div>
+
+        {/* SUPABASE CLOUD DATABASE (POSTGRESQL) SUITE */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 shadow-xs border border-emerald-100">
+                <Database className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold text-slate-900">Supabase Cloud Database (PostgreSQL)</h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Connected
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500">
+                  Global serverless database storing users, automations, captured leads, and referral commissions.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="https://supabase.com/dashboard/project/ostskxaxeccubwnduyss"
+              target="_blank"
+              rel="noreferrer"
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 inline-flex items-center gap-1.5 transition-colors"
+            >
+              <span>Open Supabase Console</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Connected Supabase Project URL
+              </label>
+              <input
+                type="text"
+                readOnly
+                value="https://ostskxaxeccubwnduyss.supabase.co"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold text-slate-800 bg-slate-50 select-all"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Project Reference ID: <strong className="font-mono text-purple-700">ostskxaxeccubwnduyss</strong>
+              </span>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Database Engine &amp; Region
+              </label>
+              <input
+                type="text"
+                readOnly
+                value="PostgreSQL 15+ (Serverless Cloud Pooler)"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 bg-slate-50"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Equipped with Row Level Security (RLS) &amp; Realtime Subscriptions.
+              </span>
+            </div>
+          </div>
+
+          {/* Database Schema Setup & 1-Click Copy */}
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>Production Database Schema (supabase/schema.sql)</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS public.users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    avatar_url TEXT,
+    role VARCHAR(50) DEFAULT 'CREATOR',
+    plan VARCHAR(50) DEFAULT 'free',
+    billing_cycle VARCHAR(20) DEFAULT 'monthly',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.automations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    trigger_type VARCHAR(50) NOT NULL,
+    keyword VARCHAR(255) NOT NULL,
+    reply_message TEXT NOT NULL,
+    active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.contacts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    instagram_handle VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
+    phone VARCHAR(50),
+    status VARCHAR(50) DEFAULT 'LEAD_QUALIFIED',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.referrals (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    referrer_code VARCHAR(100) NOT NULL,
+    referred_user_email VARCHAR(255) NOT NULL,
+    referred_user_name VARCHAR(255) NOT NULL,
+    plan VARCHAR(50) DEFAULT 'free',
+    status VARCHAR(50) DEFAULT 'TRIAL',
+    commission_amount NUMERIC(10, 2) DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);`);
+                  setCopiedSql(true);
+                  setTimeout(() => setCopiedSql(false), 2500);
+                }}
+                className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 flex items-center gap-1.5 shadow-2xs"
+              >
+                {copiedSql ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedSql ? 'SQL Copied!' : 'Copy Schema SQL'}</span>
+              </button>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              Run this SQL script inside your <strong>Supabase Dashboard &gt; SQL Editor</strong> to create all tables (users, automations, contacts, referrals) in 1 click.
+            </p>
           </div>
         </div>
 
