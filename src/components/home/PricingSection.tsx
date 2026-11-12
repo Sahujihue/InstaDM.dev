@@ -182,7 +182,7 @@ export function PricingSection() {
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                   <p className="text-[11px] text-center text-slate-400 mt-2">
-                    14-day money-back guarantee • No credit card required to start
+                    Money-back guarantee • No credit card required to start
                   </p>
                 </div>
               </div>
@@ -191,14 +191,14 @@ export function PricingSection() {
         </div>
 
         {/* Safe billing guarantee */}
-        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left mb-6">
+        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center flex-shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-900">100% Risk-Free 14-Day Guarantee</p>
-              <p className="text-xs text-slate-600">If you don&apos;t generate more leads and save hours of time, we&apos;ll refund every penny without questions.</p>
+              <p className="text-sm font-bold text-slate-900">100% Risk-Free Money-Back Guarantee</p>
+              <p className="text-xs text-slate-600">If you don&apos;t generate more leads and save hours of time, we&apos;ll refund your subscription fee without hassle.</p>
             </div>
           </div>
           <Link
@@ -207,33 +207,6 @@ export function PricingSection() {
           >
             Read Refund Policy
           </Link>
-        </div>
-
-        {/* Multi-Gateway Supported Badges */}
-        <div className="max-w-4xl mx-auto p-4 rounded-2xl bg-white border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 text-center sm:text-left">
-          <span className="font-semibold text-slate-700">
-            Accepted Payment Gateways:
-          </span>
-          <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-[11px] font-bold">
-            <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200">
-              ⚡ Razorpay (UPI, GPay, PhonePe)
-            </span>
-            <span className="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 border border-purple-200">
-              💳 Stripe (Cards, Apple Pay)
-            </span>
-            <span className="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 border border-sky-200">
-              🅿️ PayPal
-            </span>
-            <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200">
-              🌊 Cashfree
-            </span>
-            <span className="px-2.5 py-1 rounded-lg bg-green-50 text-green-800 border border-green-200">
-              🛡️ PayU
-            </span>
-            <span className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
-              🪙 Crypto (USDT / BTC)
-            </span>
-          </div>
         </div>
 
       </div>

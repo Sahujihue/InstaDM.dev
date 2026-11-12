@@ -20,7 +20,8 @@ import {
   Sparkles,
   Sliders,
   Menu,
-  X
+  X,
+  FileText
 } from 'lucide-react';
 
 export default function AdminLayout({
@@ -41,7 +42,8 @@ export default function AdminLayout({
     { label: 'Testimonials Manager', href: '/admin/testimonials', icon: MessageSquare },
     { label: 'FAQ Manager', href: '/admin/faqs', icon: HelpCircle },
     { label: 'System Logs & Webhooks', href: '/admin/logs', icon: Terminal, badge: 'Audits' },
-    { label: 'Settings & Geo-Currency', href: '/admin/settings', icon: Settings, badge: 'Geo-IP' },
+    { label: 'Pages & Legal CMS', href: '/admin/pages', icon: FileText, badge: 'CMS' },
+    { label: 'Settings & Geo-Currency', href: '/admin/settings', icon: Settings, badge: 'SEO/Geo' },
   ];
 
   return (

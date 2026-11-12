@@ -198,8 +198,30 @@ export interface ReferralStats {
   records: ReferralRecord[];
 }
 
+export interface CmsPage {
+  id: string;
+  slug: string;
+  title: string;
+  category: 'legal' | 'company' | 'support' | 'custom';
+  summary: string;
+  content: string;
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+  lastUpdated: string;
+  published: boolean;
+}
+
 export interface AdminSettings {
   siteTitle: string;
+  metaKeywords: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImageUrl: string;
+  robotsIndex: boolean;
+  googleVerificationTag: string;
   announcementText: string;
   announcementCta: string;
   announcementActive: boolean;

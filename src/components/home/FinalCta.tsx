@@ -66,7 +66,7 @@ export function FinalCta() {
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <Zap className="w-4 h-4 text-amber-300" /> 14-day full feature trial
+                <Zap className="w-4 h-4 text-amber-300" /> Instant setup &amp; activation
               </span>
               <span>•</span>
               <span>Cancel anytime</span>

@@ -21,7 +21,7 @@ export default function RefundPolicyPage() {
         <div className="space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            <span>14-Day Money-Back Guarantee</span>
+            <span>Money-Back Guarantee</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             Refund &amp; Cancellation Policy
@@ -31,9 +31,9 @@ export default function RefundPolicyPage() {
 
         <div className="prose prose-slate max-w-none text-sm text-slate-600 space-y-6 leading-relaxed">
           <section className="space-y-2">
-            <h2 className="text-lg font-bold text-slate-900">1. 14-Day Full Refund Guarantee</h2>
+            <h2 className="text-lg font-bold text-slate-900">1. Customer Satisfaction Refund Guarantee</h2>
             <p>
-              We want you to be completely satisfied with InstaDM. If for any reason our platform does not generate qualified leads or save you time within your first 14 days of subscription, simply email <code>support@instadm.dev</code> or open a ticket in your dashboard. We will refund 100% of your initial subscription fee immediately without demanding justification.
+              We want you to be completely satisfied with InstaDM. If our platform does not meet your automation expectations or you experience technical delivery issues, simply contact our team at <code>support@instadm.dev</code> or open a support ticket in your dashboard. We will process your refund request swiftly and fairly.
             </p>
           </section>
 

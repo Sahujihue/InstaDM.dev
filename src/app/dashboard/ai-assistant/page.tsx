@@ -28,7 +28,7 @@ Your goals:
   const [knowledgeBase, setKnowledgeBase] = useState(
     `FAQ:
 - What is included in the 2026 Growth Playbook? 45-page blueprint, 12 Reel templates, and DM workflow scripts.
-- How does the guarantee work? 14-day money-back guarantee with zero questions asked.
+- How does the guarantee work? 100% money-back guarantee with zero questions asked.
 - Agency features: Up to 10+ accounts, client workspaces, custom webhooks, priority phone support.`
   );
   const [confidenceThreshold, setConfidenceThreshold] = useState(85);

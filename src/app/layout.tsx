@@ -19,6 +19,9 @@ export const metadata: Metadata = {
     'Instagram lead generation',
     'Story reply automation',
     'Meta Graph API messaging',
+    'Reel comment automation',
+    'AI DM bot',
+    'Instagram CRM leads',
     'InstaDM',
     'instadm.dev'
   ],

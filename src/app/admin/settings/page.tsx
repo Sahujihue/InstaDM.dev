@@ -16,7 +16,11 @@ import {
   DollarSign,
   AlertCircle,
   Eye,
-  EyeOff
+  EyeOff,
+  Search,
+  Share2,
+  FileCode,
+  Tag
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -31,13 +35,22 @@ export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<AdminSettings>(INITIAL_ADMIN_SETTINGS);
   const [saved, setSaved] = useState(false);
 
-  // Sync with CurrencyContext on mount
+  // Sync with localStorage & CurrencyContext on mount
   useEffect(() => {
-    setSettings((prev) => ({
-      ...prev,
-      currencyPolicy: ctxPolicy || 'AUTO_GEO',
-      allowManualSwitcher: ctxAllowSwitcher || false
-    }));
+    try {
+      const stored = localStorage.getItem('instadm_admin_settings');
+      if (stored) {
+        setSettings(JSON.parse(stored));
+      } else {
+        setSettings((prev) => ({
+          ...prev,
+          currencyPolicy: ctxPolicy || 'AUTO_GEO',
+          allowManualSwitcher: ctxAllowSwitcher || false
+        }));
+      }
+    } catch {
+      // ignore
+    }
   }, [ctxPolicy, ctxAllowSwitcher]);
 
   const handleUpdate = (field: keyof AdminSettings, val: unknown) => {
@@ -65,6 +78,9 @@ export default function AdminSettingsPage() {
     } catch {}
   };
 
+  const titleLength = (settings.siteTitle || '').length;
+  const descLength = (settings.metaDescription || '').length;
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-12">
       
@@ -76,10 +92,10 @@ export default function AdminSettingsPage() {
             Global Platform Configuration
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            System &amp; Currency Policy Settings
+            SEO, Meta Tags &amp; System Settings
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Configure Geo-IP currency targeting, referral commissions, SEO metadata, and announcement banners.
+            Configure Meta Title, Meta Description, Meta Keywords, Google Search Console, and Geo-IP currency targeting.
           </p>
         </div>
 
@@ -96,12 +112,193 @@ export default function AdminSettingsPage() {
       {saved && (
         <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-3 animate-in fade-in duration-200">
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span>Global platform settings &amp; Geo-Currency rules updated successfully!</span>
+          <span>SEO Metadata, Meta Tags, and Global Settings successfully updated and live!</span>
         </div>
       )}
 
       <form onSubmit={handleSave} className="space-y-8">
         
+        {/* COMPREHENSIVE SEO & METADATA SUITE */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                <Search className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Search Engine Optimization (SEO)</h3>
+                <p className="text-xs text-slate-500">
+                  Manage search engine indexability, Google snippet previews, and metadata tags.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={settings.robotsIndex ?? true}
+                  onChange={(e) => handleUpdate('robotsIndex', e.target.checked)}
+                  className="w-4 h-4 text-purple-600 rounded"
+                />
+                <span>Index &amp; Follow (robots.txt)</span>
+              </label>
+            </div>
+          </div>
+
+          {/* LIVE GOOGLE SERP PREVIEW BOX */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Eye className="w-3.5 h-3.5 text-purple-600" />
+              Google Desktop &amp; Mobile Search Result Preview:
+            </span>
+            
+            <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs space-y-1">
+              <div className="flex items-center gap-2 text-xs text-slate-700 font-sans">
+                <div className="w-4 h-4 rounded-full bg-purple-600 text-white flex items-center justify-center text-[9px] font-bold">
+                  I
+                </div>
+                <span className="text-[12px] text-slate-800 font-normal">instadm.dev</span>
+                <span className="text-[11px] text-slate-400">› https://instadm.dev</span>
+              </div>
+              
+              <h4 className="text-base sm:text-lg font-medium text-[#1a0dab] hover:underline cursor-pointer leading-snug line-clamp-1">
+                {settings.siteTitle || 'InstaDM – Turn Every Instagram Interaction Into a Customer | instadm.dev'}
+              </h4>
+
+              <p className="text-xs text-[#4d5156] leading-relaxed line-clamp-2">
+                {settings.metaDescription || 'Automate Instagram DMs, reply to comments instantly, capture leads, and convert followers into customers — all on autopilot with official Meta Graph API v21.0.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Form Fields: Title, Keywords, Description, Canonical */}
+          <div className="space-y-4">
+            
+            {/* Meta Title */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700">
+                  Meta Title Tag (Page Title)
+                </label>
+                <span className={`text-[10px] font-mono font-bold ${titleLength > 65 ? 'text-amber-600' : 'text-slate-400'}`}>
+                  {titleLength} / 60 recommended characters
+                </span>
+              </div>
+              <input
+                type="text"
+                required
+                value={settings.siteTitle}
+                onChange={(e) => handleUpdate('siteTitle', e.target.value)}
+                placeholder="e.g. InstaDM – Turn Every Instagram Interaction Into a Customer | instadm.dev"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Primary title tag indexed by Google, Bing, and displayed in browser tab headers.
+              </span>
+            </div>
+
+            {/* Meta Keywords */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700">
+                  Meta Keywords (Comma Separated)
+                </label>
+                <Tag className="w-3.5 h-3.5 text-slate-400" />
+              </div>
+              <input
+                type="text"
+                value={settings.metaKeywords || ''}
+                onChange={(e) => handleUpdate('metaKeywords', e.target.value)}
+                placeholder="instagram dm automation, reel comment to dm, meta graph api bot, ig lead generation, instagram bot"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Comma-separated target keywords for SEO crawlers and search discovery.
+              </span>
+            </div>
+
+            {/* Meta Description */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700">
+                  Meta Description
+                </label>
+                <span className={`text-[10px] font-mono font-bold ${descLength > 165 ? 'text-amber-600' : 'text-slate-400'}`}>
+                  {descLength} / 160 recommended characters
+                </span>
+              </div>
+              <textarea
+                rows={3}
+                required
+                value={settings.metaDescription || ''}
+                onChange={(e) => handleUpdate('metaDescription', e.target.value)}
+                placeholder="Enter rich, conversion-focused description snippet displayed on Google search result pages..."
+                className="w-full p-3 rounded-xl border border-slate-200 text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            {/* Canonical URL & Google Verification */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Canonical URL
+                </label>
+                <input
+                  type="url"
+                  value={settings.canonicalUrl || 'https://instadm.dev'}
+                  onChange={(e) => handleUpdate('canonicalUrl', e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Google Search Console Verification Tag
+                </label>
+                <input
+                  type="text"
+                  value={settings.googleVerificationTag || ''}
+                  onChange={(e) => handleUpdate('googleVerificationTag', e.target.value)}
+                  placeholder="google-site-verification=abc..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </div>
+
+            {/* Social Sharing OpenGraph Settings */}
+            <div className="pt-3 border-t border-slate-100 space-y-3">
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Share2 className="w-3.5 h-3.5 text-purple-600" />
+                Social Media Card Sharing (OpenGraph / Twitter)
+              </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">OG Title</label>
+                  <input
+                    type="text"
+                    value={settings.ogTitle || settings.siteTitle}
+                    onChange={(e) => handleUpdate('ogTitle', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">OG Cover Image URL</label>
+                  <input
+                    type="text"
+                    value={settings.ogImageUrl || 'https://instadm.dev/og-cover.png'}
+                    onChange={(e) => handleUpdate('ogImageUrl', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         {/* GEO-CURRENCY TARGETING POLICY */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
@@ -329,56 +526,6 @@ export default function AdminSettingsPage() {
                 value={settings.announcementCta}
                 onChange={(e) => handleUpdate('announcementCta', e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Global SEO Settings */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-          <div className="pb-3 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900">SEO &amp; OpenGraph Settings</h3>
-            <p className="text-xs text-slate-500">Search engine title and social media sharing cards</p>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Site Title Tag</label>
-              <input
-                type="text"
-                value={settings.siteTitle}
-                onChange={(e) => handleUpdate('siteTitle', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Hero Section Main Headline</label>
-              <input
-                type="text"
-                value={settings.heroHeadline}
-                onChange={(e) => handleUpdate('heroHeadline', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Hero Subheading</label>
-              <textarea
-                rows={2}
-                value={settings.heroSubheadline}
-                onChange={(e) => handleUpdate('heroSubheadline', e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-200 text-xs leading-relaxed"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Support Contact Email</label>
-              <input
-                type="email"
-                value={settings.supportEmail}
-                onChange={(e) => handleUpdate('supportEmail', e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono"
               />
             </div>
           </div>

@@ -171,7 +171,7 @@ export default function SignupPage() {
           <div className="mt-6 pt-6 border-t border-slate-100 text-center">
             <p className="text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              No credit card required • Instant 14-day trial
+              No credit card required • Instant access
             </p>
           </div>
 

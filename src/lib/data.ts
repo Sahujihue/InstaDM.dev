@@ -8,7 +8,8 @@ import {
   AdminSettings, 
   InstagramPost,
   PaymentGatewayConfig,
-  PaymentTransaction
+  PaymentTransaction,
+  CmsPage
 } from '@/types';
 
 export const INITIAL_PAYMENT_GATEWAYS: PaymentGatewayConfig[] = [
@@ -607,7 +608,15 @@ export const INITIAL_LEADS: ContactLead[] = [
 ];
 
 export const INITIAL_ADMIN_SETTINGS: AdminSettings = {
-  siteTitle: 'InstaDM – Turn Every Instagram Interaction Into a Customer',
+  siteTitle: 'InstaDM – Turn Every Instagram Interaction Into a Customer | instadm.dev',
+  metaKeywords: 'instagram dm automation, instagram comment to dm, meta graph api automation, reel comment automation, ig dm bot, instagram lead generation, social media automation, automated direct messages',
+  metaDescription: 'Automate Instagram DMs, reply to comments instantly, capture leads, and convert followers into customers — all on autopilot with official Meta Graph API v21.0.',
+  canonicalUrl: 'https://instadm.dev',
+  ogTitle: 'InstaDM – Turn Every Instagram Interaction Into a Customer',
+  ogDescription: 'Automate Instagram DMs, reply to Reel comments instantly, capture qualified email leads 24/7 with 100% Meta API compliance.',
+  ogImageUrl: 'https://instadm.dev/og-cover.png',
+  robotsIndex: true,
+  googleVerificationTag: 'google-site-verification=instadm_meta_google_search_console_token_2026',
   announcementText: 'Automate your Instagram DMs and grow your business 24/7.',
   announcementCta: 'Explore Features',
   announcementActive: true,
@@ -622,3 +631,148 @@ export const INITIAL_ADMIN_SETTINGS: AdminSettings = {
   affiliateCommissionRate: 30,
   minimumPayoutAmount: 2000
 };
+
+export const INITIAL_CMS_PAGES: CmsPage[] = [
+  {
+    id: 'page-privacy',
+    slug: 'privacy',
+    title: 'Privacy Policy',
+    category: 'legal',
+    summary: 'How InstaDM collects, stores, and protects creator and lead data in compliance with Meta Graph API and GDPR.',
+    metaTitle: 'Privacy Policy | InstaDM – Secure Meta Compliant Automation',
+    metaDescription: 'Read the official InstaDM privacy policy detailing our data protection standards, Meta Graph API tokens security, and GDPR compliance.',
+    metaKeywords: 'privacy policy, meta compliance, gdpr, instagram token privacy, data security',
+    lastUpdated: 'November 12, 2026',
+    published: true,
+    content: `## 1. Information We Collect
+InstaDM collects information you provide directly, such as your name, email address, password, and Meta OAuth credentials when connecting an Instagram Creator or Business account. We also process incoming comment webhooks and direct message metadata required to deliver automated interactions.
+
+## 2. Meta Platform Policy & Data Protection
+We strictly adhere to Meta Developer Policies. We never request, store, or process your Instagram account password. All interactions are dispatched via official Meta Graph API v21.0 access tokens. Access tokens are encrypted using AES-256 at rest and transmitted strictly via HTTPS with TLS 1.3 encryption.
+
+## 3. How We Use Information
+We use information to execute your automated DM funnels, capture and organize customer leads in your CRM dashboard, monitor delivery analytics, process subscription billing, and prevent platform abuse.
+
+## 4. No Data Selling or Scraping
+InstaDM does not sell, rent, or monetize your personal information or follower data. We strictly refuse unauthorized browser scraping.
+
+## 5. Contacting Our Data Privacy Team
+For privacy inquiries or data deletion requests, contact us at privacy@instadm.dev.`
+  },
+  {
+    id: 'page-terms',
+    slug: 'terms',
+    title: 'Terms of Service',
+    category: 'legal',
+    summary: 'The rules, terms, and guidelines governing your usage of the InstaDM SaaS platform.',
+    metaTitle: 'Terms of Service | InstaDM Platform Agreement',
+    metaDescription: 'Review the official terms of service for InstaDM, covering acceptable use, Meta Platform policies, subscriptions, and intellectual property.',
+    metaKeywords: 'terms of service, legal terms, acceptable use, meta messaging rules',
+    lastUpdated: 'November 12, 2026',
+    published: true,
+    content: `## 1. Acceptance of Terms
+By accessing or using InstaDM (https://instadm.dev), you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use our services.
+
+## 2. Permitted & Acceptable Use
+You agree to use InstaDM solely for legitimate marketing, customer support, and sales interactions. You strictly agree NOT to:
+- Dispatch spam, unsolicited promotions, or deceptive phishing links.
+- Send messages that violate Meta Community Standards or Instagram Guidelines.
+- Attempt to circumvent Meta's rate limits or message delivery rules.
+
+## 3. Account Security & Meta OAuth
+You are responsible for maintaining the confidentiality of your credentials. You agree that InstaDM operates via Meta Graph API authorization, and your subscription is subject to your Instagram account maintaining valid Creator/Business status.
+
+## 4. Subscriptions & Cancellations
+InstaDM plans are billed in advance on a recurring monthly or annual basis. You may cancel your subscription at any time with a single click in your dashboard.
+
+## 5. Limitation of Liability
+InstaDM is not liable for indirect, incidental, or punitive damages resulting from your use of the service or actions taken by Meta Platforms, Inc.`
+  },
+  {
+    id: 'page-about',
+    slug: 'about',
+    title: 'About InstaDM',
+    category: 'company',
+    summary: 'Our mission to empower creators, coaches, and agencies to turn every Instagram interaction into a lifelong customer.',
+    metaTitle: 'About Us | InstaDM – The Modern Instagram DM Automation Platform',
+    metaDescription: 'Learn about InstaDM, our creator-first mission, our architecture built on the official Meta Graph API, and our team.',
+    metaKeywords: 'about instadm, creator automation, instagram marketing platform, about us',
+    lastUpdated: 'November 12, 2026',
+    published: true,
+    content: `## Turning Interactions Into Relationships
+Founded in 2026, InstaDM was built with a single mission: to eliminate the painful hours creators and businesses waste manually replying to "LINK", "INFO", or "HOW" on Instagram Reels and Stories.
+
+Traditional "link in bio" links lose up to 80% of prospective buyers. InstaDM bridges the gap by delivering personalized resources, links, and checkout vouchers directly to followers' DMs within seconds of their comment.
+
+## Built on Official Meta Infrastructure
+Unlike legacy bots that relied on fragile browser extensions or risked account bans with password sharing, InstaDM is built strictly on the sanctioned **Meta Instagram Graph API v21.0**. We are 100% compliant, secure, and ban-safe.
+
+## Our Core Values
+1. **Creator-First Simplicity:** No code required. Set up your first funnel in under 60 seconds.
+2. **Speed & Reliability:** Automated replies dispatched in under 3 seconds with 99.8% delivery uptime.
+3. **Respect for Followers:** Clean, polite, and permission-based conversations that convert followers into customers.`
+  },
+  {
+    id: 'page-refund',
+    slug: 'refund',
+    title: 'Refund & Cancellation Policy',
+    category: 'legal',
+    summary: 'Our fair money-back guarantee, single-click cancellation terms, and refund processing timelines.',
+    metaTitle: 'Refund Policy | InstaDM Money-Back Guarantee',
+    metaDescription: 'Read InstaDM refund terms, satisfaction guarantee, and simple single-click cancellation instructions.',
+    metaKeywords: 'refund policy, cancellation terms, money-back guarantee, instadm billing',
+    lastUpdated: 'November 12, 2026',
+    published: true,
+    content: `## 1. Customer Satisfaction Refund Guarantee
+We want you to be completely satisfied with InstaDM. If our platform does not meet your automation expectations or you experience technical delivery issues, simply contact our team at support@instadm.dev or open a support ticket in your dashboard. We will process your refund request swiftly and fairly.
+
+## 2. Single-Click Cancellation Anytime
+You may cancel your monthly or yearly subscription at any time directly through **Dashboard ➔ Billing ➔ Cancel Subscription**. There are no cancellation penalties or hidden lock-ins. Following cancellation, your account retains full access until the end of your current paid billing period.
+
+## 3. Currency & Processing Timelines
+Refunds are issued directly to your original payment method (Credit Card, Debit Card, UPI, Net Banking, or PayPal) in your transacted currency (INR or USD). Processing typically reflects on your bank statement within 3 to 5 business days.`
+  },
+  {
+    id: 'page-contact',
+    slug: 'contact',
+    title: 'Contact Us & Support',
+    category: 'support',
+    summary: 'Get in touch with the InstaDM technical engineering and customer support team.',
+    metaTitle: 'Contact Us | InstaDM Customer Support & Partnerships',
+    metaDescription: 'Need help with Instagram DM automation? Contact InstaDM customer support via email, live ticket, or partner inquiries.',
+    metaKeywords: 'contact instadm, support email, help desk, creator support',
+    lastUpdated: 'November 12, 2026',
+    published: true,
+    content: `## We're Here to Help You Scale
+Whether you have a question about Meta OAuth connection, webhook delivery, agency client workspaces, or custom integrations, our technical team is available 24/7.
+
+## Direct Contact Channels
+- **General & Technical Support:** support@instadm.dev
+- **Partnerships & Affiliates:** partners@instadm.dev
+- **Privacy & Legal:** legal@instadm.dev
+- **Response Time:** Typically within 2 hours during business hours (9:00 AM – 9:00 PM IST / EST).
+
+## Self-Service Resources
+Before reaching out, check our interactive **Help Center & FAQ** on the homepage or test your webhooks in real-time in your User Dashboard.`
+  },
+  {
+    id: 'page-disclaimer',
+    slug: 'disclaimer',
+    title: 'Disclaimer & Meta API Compliance',
+    category: 'legal',
+    summary: 'Official non-affiliation disclaimer with Meta Platforms, Inc. and earnings expectations.',
+    metaTitle: 'Disclaimer & Compliance Notice | InstaDM',
+    metaDescription: 'Official disclaimer regarding Meta Platforms, Inc. trademarks, API independence, and business earnings representations.',
+    metaKeywords: 'disclaimer, meta compliance, instagram trademark notice, earnings disclaimer',
+    lastUpdated: 'November 12, 2026',
+    published: true,
+    content: `## 1. Non-Affiliation with Meta Platforms, Inc.
+InstaDM is an independent software application developed by independent engineers. InstaDM is NOT affiliated with, sponsored by, endorsed by, or associated in any way with Meta Platforms, Inc., Instagram, or Facebook. All Instagram and Facebook trademarks, logos, and brand names are the intellectual property of Meta Platforms, Inc.
+
+## 2. Meta Graph API Independence
+InstaDM utilizes the publicly available, official Meta Instagram Graph API pursuant to Meta Developer Terms and Policies. Changes to Meta's third-party developer policies or API endpoints may affect platform features.
+
+## 3. Earnings & Performance Disclaimer
+Any case studies, testimonials, or revenue examples presented on this website are illustrative of possible outcomes and do not guarantee identical results. Your individual business performance depends on audience size, content quality, and product market fit.`
+  }
+];

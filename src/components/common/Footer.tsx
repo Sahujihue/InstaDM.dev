@@ -109,33 +109,33 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Col 3: Resources & Support */}
+          {/* Col 3: Company & Support */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Resources</h4>
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Company &amp; Help</h4>
             <ul className="space-y-2 text-xs sm:text-sm">
+              <li>
+                <Link href="/about" className="hover:text-purple-400 transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-purple-400 transition-colors">
+                  Contact Us
+                </Link>
+              </li>
               <li>
                 <Link href="/#faq" className="hover:text-purple-400 transition-colors">
                   Help Center &amp; FAQ
                 </Link>
               </li>
               <li>
-                <a href="mailto:support@instadm.dev" className="hover:text-purple-400 transition-colors">
-                  Contact Us (support@instadm.dev)
-                </a>
+                <Link href="/signup" className="hover:text-purple-400 transition-colors">
+                  Sign Up Free
+                </Link>
               </li>
               <li>
                 <Link href="/admin" className="hover:text-purple-400 transition-colors">
                   Admin Portal
-                </Link>
-              </li>
-              <li>
-                <a href="#features" className="hover:text-purple-400 transition-colors">
-                  API &amp; Webhooks Docs
-                </a>
-              </li>
-              <li>
-                <Link href="/signup" className="hover:text-purple-400 transition-colors">
-                  Sign Up Free
                 </Link>
               </li>
             </ul>
@@ -157,7 +157,12 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/refund" className="hover:text-purple-400 transition-colors">
-                  Refund Policy (14 Days)
+                  Refund Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/disclaimer" className="hover:text-purple-400 transition-colors">
+                  Disclaimer &amp; API Terms
                 </Link>
               </li>
               <li>

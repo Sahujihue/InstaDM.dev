@@ -161,7 +161,7 @@ export function CheckoutModal({
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                14-Day Money-Back Guarantee • Instant Plan Activation
+                100% Money-Back Guarantee • Instant Plan Activation
               </p>
             </div>
           </div>
@@ -426,7 +426,7 @@ export function CheckoutModal({
 
             <p className="text-[11px] text-center text-slate-400 flex items-center justify-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              14-Day Money-Back Guarantee • Automated Invoices &amp; GST/VAT Receipts
+              100% Money-Back Guarantee • Automated Invoices &amp; GST/VAT Receipts
             </p>
           </form>
 
