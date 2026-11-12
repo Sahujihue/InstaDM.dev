@@ -7,6 +7,7 @@ export interface User {
   plan: 'free' | 'starter' | 'pro' | 'agency';
   billingCycle: 'monthly' | 'yearly';
   currency: 'INR' | 'USD';
+  status?: 'ACTIVE' | 'SUSPENDED' | 'BANNED';
   createdAt: string;
   connectedAccountsCount: number;
   monthlyDmsUsed: number;
@@ -174,6 +175,29 @@ export interface WebhookLog {
   payload: Record<string, unknown>;
 }
 
+export interface ReferralRecord {
+  id: string;
+  referredUserEmail: string;
+  referredUserName: string;
+  referredUserAvatar?: string;
+  plan: 'free' | 'starter' | 'pro' | 'agency';
+  date: string;
+  commissionAmount: number;
+  status: 'PAID' | 'PENDING' | 'TRIAL';
+}
+
+export interface ReferralStats {
+  referralCode: string;
+  referralLink: string;
+  totalClicks: number;
+  totalSignups: number;
+  paidConversions: number;
+  totalEarned: number;
+  pendingPayout: number;
+  commissionRate: number;
+  records: ReferralRecord[];
+}
+
 export interface AdminSettings {
   siteTitle: string;
   announcementText: string;
@@ -185,4 +209,8 @@ export interface AdminSettings {
   openAiApiKeyConfigured: boolean;
   metaAppId: string;
   webhookVerifyToken: string;
+  currencyPolicy: 'AUTO_GEO' | 'FORCE_USD' | 'FORCE_INR';
+  allowManualSwitcher: boolean;
+  affiliateCommissionRate: number;
+  minimumPayoutAmount: number;
 }

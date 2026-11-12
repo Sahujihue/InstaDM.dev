@@ -7,7 +7,7 @@ import { INITIAL_PRICING_PLANS } from '@/lib/data';
 import { Check, Sparkles, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 
 export function PricingSection() {
-  const { currency, setCurrency, isYearly, setIsYearly, formatPrice } = useCurrency();
+  const { currency, setCurrency, isYearly, setIsYearly, formatPrice, allowManualSwitcher } = useCurrency();
 
   return (
     <section id="pricing" className="py-20 lg:py-28 bg-white relative overflow-hidden">
@@ -60,33 +60,39 @@ export function PricingSection() {
               </button>
             </div>
 
-            {/* Currency Switcher */}
-            <div className="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-2xl border border-slate-200 text-xs font-bold text-slate-700">
-              <span className="text-slate-500 font-normal">Currency:</span>
-              <button
-                type="button"
-                onClick={() => setCurrency('USD')}
-                className={`px-2 py-1 rounded-lg transition-all ${
-                  currency === 'USD'
-                    ? 'bg-white text-purple-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                USD ($)
-              </button>
-              <span className="text-slate-300">|</span>
-              <button
-                type="button"
-                onClick={() => setCurrency('INR')}
-                className={`px-2 py-1 rounded-lg transition-all ${
-                  currency === 'INR'
-                    ? 'bg-white text-purple-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                INR (₹)
-              </button>
-            </div>
+            {/* Currency Switcher (Shown only if allowed by Admin, otherwise strictly locked to country) */}
+            {allowManualSwitcher ? (
+              <div className="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-2xl border border-slate-200 text-xs font-bold text-slate-700">
+                <span className="text-slate-500 font-normal">Currency:</span>
+                <button
+                  type="button"
+                  onClick={() => setCurrency('USD')}
+                  className={`px-2 py-1 rounded-lg transition-all ${
+                    currency === 'USD'
+                      ? 'bg-white text-purple-700 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  USD ($)
+                </button>
+                <span className="text-slate-300">|</span>
+                <button
+                  type="button"
+                  onClick={() => setCurrency('INR')}
+                  className={`px-2 py-1 rounded-lg transition-all ${
+                    currency === 'INR'
+                      ? 'bg-white text-purple-700 shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  INR (₹)
+                </button>
+              </div>
+            ) : (
+              <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                Prices in {currency === 'INR' ? '🇮🇳 Indian Rupee (₹)' : '🌐 US Dollar ($)'}
+              </span>
+            )}
 
           </div>
         </div>

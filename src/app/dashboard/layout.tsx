@@ -24,7 +24,8 @@ import {
   Sparkles,
   ChevronRight,
   ShieldCheck,
-  Bot
+  Bot,
+  Gift
 } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -46,6 +47,7 @@ export default function DashboardLayout({
     { label: 'DM Live Inbox', href: '/dashboard/inbox', icon: MessageSquare },
     { label: 'AI Assistant', href: '/dashboard/ai-assistant', icon: Bot, badge: 'GPT-4o' },
     { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+    { label: 'Refer & Earn', href: '/dashboard/referrals', icon: Gift, badge: '30% Comm' },
     { label: 'Integrations', href: '/dashboard/integrations', icon: Sliders },
     { label: 'Billing & Plans', href: '/dashboard/billing', icon: CreditCard },
     { label: 'Settings', href: '/dashboard/settings', icon: Settings },

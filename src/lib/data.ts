@@ -616,5 +616,9 @@ export const INITIAL_ADMIN_SETTINGS: AdminSettings = {
   supportEmail: 'support@instadm.dev',
   openAiApiKeyConfigured: true,
   metaAppId: 'app_meta_91823740192',
-  webhookVerifyToken: 'instadm_meta_verify_token_prod_2026'
+  webhookVerifyToken: 'instadm_meta_verify_token_prod_2026',
+  currencyPolicy: 'AUTO_GEO',
+  allowManualSwitcher: false,
+  affiliateCommissionRate: 30,
+  minimumPayoutAmount: 2000
 };

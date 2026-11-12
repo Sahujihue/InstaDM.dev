@@ -37,11 +37,11 @@ export default function AdminLayout({
     { label: 'Admin Overview', href: '/admin', icon: LayoutDashboard },
     { label: 'Payment Gateways', href: '/admin/payments', icon: CreditCard, badge: 'Gateways' },
     { label: 'Pricing & Plans Manager', href: '/admin/pricing', icon: Sliders, badge: 'Live Config' },
-    { label: 'User Management', href: '/admin/users', icon: Users },
+    { label: 'User Management', href: '/admin/users', icon: Users, badge: 'Edit/Del' },
     { label: 'Testimonials Manager', href: '/admin/testimonials', icon: MessageSquare },
     { label: 'FAQ Manager', href: '/admin/faqs', icon: HelpCircle },
     { label: 'System Logs & Webhooks', href: '/admin/logs', icon: Terminal, badge: 'Audits' },
-    { label: 'SEO & Site Branding', href: '/admin/settings', icon: Settings },
+    { label: 'Settings & Geo-Currency', href: '/admin/settings', icon: Settings, badge: 'Geo-IP' },
   ];
 
   return (

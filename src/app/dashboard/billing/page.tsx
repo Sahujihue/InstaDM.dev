@@ -20,7 +20,7 @@ import { CheckoutModal } from '@/components/billing/CheckoutModal';
 
 export default function BillingPage() {
   const { user, updateUserPlan } = useAuth();
-  const { currency, setCurrency, isYearly, setIsYearly, formatPrice } = useCurrency();
+  const { currency, setCurrency, isYearly, setIsYearly, formatPrice, allowManualSwitcher } = useCurrency();
   const [activePlan, setActivePlan] = useState(user?.plan || 'pro');
 
   // Checkout modal state
@@ -125,20 +125,26 @@ export default function BillingPage() {
               </button>
             </div>
 
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold">
-              <button
-                onClick={() => setCurrency('USD')}
-                className={`px-2 py-1 rounded-lg ${currency === 'USD' ? 'bg-white text-purple-700' : 'text-slate-600'}`}
-              >
-                USD ($)
-              </button>
-              <button
-                onClick={() => setCurrency('INR')}
-                className={`px-2 py-1 rounded-lg ${currency === 'INR' ? 'bg-white text-purple-700' : 'text-slate-600'}`}
-              >
-                INR (₹)
-              </button>
-            </div>
+            {allowManualSwitcher ? (
+              <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                <button
+                  onClick={() => setCurrency('USD')}
+                  className={`px-2 py-1 rounded-lg ${currency === 'USD' ? 'bg-white text-purple-700' : 'text-slate-600'}`}
+                >
+                  USD ($)
+                </button>
+                <button
+                  onClick={() => setCurrency('INR')}
+                  className={`px-2 py-1 rounded-lg ${currency === 'INR' ? 'bg-white text-purple-700' : 'text-slate-600'}`}
+                >
+                  INR (₹)
+                </button>
+              </div>
+            ) : (
+              <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                {currency === 'INR' ? '🇮🇳 ₹ INR' : '🌐 $ USD'}
+              </span>
+            )}
           </div>
         </div>
 
