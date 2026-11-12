@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
+  loginWithGoogle: (email?: string, name?: string) => Promise<{ success: boolean }>;
   loginAsDemoUser: () => void;
   loginAsDemoAdmin: () => void;
   signup: (name: string, email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
@@ -90,6 +91,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   };
 
+  const loginWithGoogle = async (email = 'creator.google@instadm.dev', name = 'Google Creator') => {
+    const googleUser: User = {
+      ...DEFAULT_DEMO_USER,
+      id: `usr_g_${Date.now()}`,
+      name,
+      email,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
+    };
+    saveUser(googleUser);
+    return { success: true };
+  };
+
   const loginAsDemoUser = () => {
     saveUser(DEFAULT_DEMO_USER);
   };
@@ -138,6 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         loading,
         login,
+        loginWithGoogle,
         loginAsDemoUser,
         loginAsDemoAdmin,
         signup,

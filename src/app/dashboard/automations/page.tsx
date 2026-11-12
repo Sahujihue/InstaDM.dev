@@ -23,7 +23,8 @@ import {
   Image as ImageIcon,
   Film,
   Layers,
-  Check
+  Check,
+  Trash2
 } from 'lucide-react';
 
 export default function AutomationsPage() {
@@ -46,6 +47,10 @@ export default function AutomationsPage() {
 
   const handleSaveAutomation = (newAuto: Automation) => {
     setAutomations([newAuto, ...automations]);
+  };
+
+  const handleDeleteAutomation = (id: string) => {
+    setAutomations(automations.filter((a) => a.id !== id));
   };
 
   const filtered = automations.filter((a) => {
@@ -229,13 +234,23 @@ export default function AutomationsPage() {
                     <span className="text-base font-black text-purple-600">{auto.leadsCollected.toLocaleString()}</span>
                   </div>
 
-                  <Link
-                    href="/dashboard/flow-builder"
-                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 transition-colors flex items-center gap-1"
-                  >
-                    <span>Edit</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </Link>
+                  <div className="flex items-center gap-1.5">
+                    <Link
+                      href="/dashboard/flow-builder"
+                      className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 transition-colors flex items-center gap-1"
+                    >
+                      <span>Edit</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteAutomation(auto.id)}
+                      title="Delete Automation"
+                      className="p-1.5 rounded-xl border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             );

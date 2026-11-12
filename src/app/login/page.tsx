@@ -6,14 +6,21 @@ import { useRouter } from 'next/navigation';
 import { InstaLogo } from '@/components/common/InstaLogo';
 import { useAuth } from '@/context/AuthContext';
 import { ArrowRight, Lock, Mail, ShieldCheck, CheckCircle2, User, KeyRound } from 'lucide-react';
+import { GoogleIcon } from '@/components/common/BrandIcons';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, loginAsDemoUser, loginAsDemoAdmin } = useAuth();
+  const { login, loginWithGoogle, loginAsDemoUser, loginAsDemoAdmin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    await loginWithGoogle('google.creator@instadm.dev', 'Google Creator');
+    router.push('/dashboard');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +105,26 @@ export default function LoginPage() {
               {error}
             </div>
           )}
+
+          {/* Google Sign In Option */}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full py-2.5 px-4 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 flex items-center justify-center gap-2.5 transition-all shadow-2xs hover:border-slate-300 mb-5 disabled:opacity-50"
+          >
+            <GoogleIcon className="w-4 h-4 shrink-0" />
+            <span>Continue with Google</span>
+          </button>
+
+          <div className="relative mb-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white px-2.5 text-slate-400 font-semibold">Or sign in with email</span>
+            </div>
+          </div>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>

@@ -125,7 +125,7 @@ export default function BillingPage() {
               </button>
             </div>
 
-            {allowManualSwitcher ? (
+            {allowManualSwitcher && (
               <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold">
                 <button
                   onClick={() => setCurrency('USD')}
@@ -140,10 +140,6 @@ export default function BillingPage() {
                   INR (₹)
                 </button>
               </div>
-            ) : (
-              <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-                {currency === 'INR' ? '🇮🇳 ₹ INR' : '🌐 $ USD'}
-              </span>
             )}
           </div>
         </div>

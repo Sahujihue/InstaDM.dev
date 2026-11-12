@@ -38,9 +38,18 @@ export function CreateAutomationModal({ isOpen, onClose, onSave }: CreateAutomat
   const [triggerType, setTriggerType] = useState<'COMMENT_TO_DM' | 'STORY_REPLY' | 'DM_KEYWORD'>('COMMENT_TO_DM');
 
   // Step 2: Post / Story Scope Selection
+  const [posts, setPosts] = useState<InstagramPost[]>(INITIAL_INSTAGRAM_POSTS);
   const [scope, setScope] = useState<'SPECIFIC_POST' | 'ALL_POSTS' | 'NEXT_POST' | 'SPECIFIC_STORY' | 'ALL_STORIES'>('SPECIFIC_POST');
   const [selectedPost, setSelectedPost] = useState<InstagramPost>(INITIAL_INSTAGRAM_POSTS[0]);
   const [selectedStory, setSelectedStory] = useState<InstagramPost>(INITIAL_INSTAGRAM_STORIES[0]);
+
+  const handleDeletePost = (postId: string) => {
+    const updated = posts.filter(p => p.id !== postId);
+    setPosts(updated);
+    if (selectedPost.id === postId && updated.length > 0) {
+      setSelectedPost(updated[0]);
+    }
+  };
 
   // Step 3: Trigger Keywords
   const [keywordMode, setKeywordMode] = useState<'SPECIFIC' | 'ANY'>('SPECIFIC');
@@ -279,13 +288,13 @@ export function CreateAutomationModal({ isOpen, onClose, onSave }: CreateAutomat
 
                   {/* Visual Grid of Instagram Posts */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-72 overflow-y-auto p-1">
-                    {INITIAL_INSTAGRAM_POSTS.map((post) => {
+                    {posts.map((post) => {
                       const isSelected = selectedPost.id === post.id;
                       return (
                         <div
                           key={post.id}
                           onClick={() => setSelectedPost(post)}
-                          className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex gap-3 relative ${
+                          className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex gap-3 relative group ${
                             isSelected
                               ? 'border-purple-600 bg-white shadow-md ring-2 ring-purple-500/20'
                               : 'border-slate-200 bg-white hover:border-purple-200'
@@ -308,11 +317,24 @@ export function CreateAutomationModal({ isOpen, onClose, onSave }: CreateAutomat
                             <div>
                               <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
                                 <span>{post.postedAt}</span>
-                                {isSelected && (
-                                  <span className="flex items-center gap-1 font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
-                                    <Check className="w-3 h-3" /> Selected
-                                  </span>
-                                )}
+                                <div className="flex items-center gap-1">
+                                  {isSelected && (
+                                    <span className="flex items-center gap-1 font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 text-[10px]">
+                                      <Check className="w-3 h-3" /> Selected
+                                    </span>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeletePost(post.id);
+                                    }}
+                                    title="Delete old post from library"
+                                    className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
                               </div>
                               <p className="text-xs text-slate-800 line-clamp-2 font-medium">
                                 {post.caption}

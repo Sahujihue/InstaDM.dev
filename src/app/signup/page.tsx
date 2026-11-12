@@ -6,16 +6,23 @@ import { useRouter } from 'next/navigation';
 import { InstaLogo } from '@/components/common/InstaLogo';
 import { useAuth } from '@/context/AuthContext';
 import { ArrowRight, Lock, Mail, User, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { GoogleIcon } from '@/components/common/BrandIcons';
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signup } = useAuth();
+  const { signup, loginWithGoogle } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agreed, setAgreed] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+
+  const handleGoogleSignup = async () => {
+    setLoading(true);
+    await loginWithGoogle('new.creator@instadm.dev', 'New Creator');
+    router.push('/dashboard');
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +63,26 @@ export default function SignupPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-6 shadow-xl shadow-purple-500/5 rounded-3xl border border-slate-200/90 sm:px-10">
           
+          {/* Continue with Google */}
+          <button
+            type="button"
+            onClick={handleGoogleSignup}
+            disabled={loading}
+            className="w-full py-2.5 px-4 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 flex items-center justify-center gap-2.5 transition-all shadow-2xs hover:border-slate-300 mb-5 disabled:opacity-50"
+          >
+            <GoogleIcon className="w-4 h-4 shrink-0" />
+            <span>Continue with Google</span>
+          </button>
+
+          <div className="relative mb-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white px-2.5 text-slate-400 font-semibold">Or sign up with email</span>
+            </div>
+          </div>
+
           <form className="space-y-4" onSubmit={handleRegister}>
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">

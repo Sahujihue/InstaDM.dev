@@ -60,8 +60,8 @@ export function PricingSection() {
               </button>
             </div>
 
-            {/* Currency Switcher (Shown only if allowed by Admin, otherwise strictly locked to country) */}
-            {allowManualSwitcher ? (
+            {/* Currency Switcher (Shown only if allowed by Admin) */}
+            {allowManualSwitcher && (
               <div className="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-2xl border border-slate-200 text-xs font-bold text-slate-700">
                 <span className="text-slate-500 font-normal">Currency:</span>
                 <button
@@ -88,10 +88,6 @@ export function PricingSection() {
                   INR (₹)
                 </button>
               </div>
-            ) : (
-              <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-                Prices in {currency === 'INR' ? '🇮🇳 Indian Rupee (₹)' : '🌐 US Dollar ($)'}
-              </span>
             )}
 
           </div>
