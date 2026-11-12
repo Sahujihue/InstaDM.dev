@@ -10,26 +10,30 @@ import {
   CheckCircle2, 
   Globe, 
   Sparkles, 
-  ShieldCheck,
-  CreditCard,
-  Gift,
-  DollarSign,
-  AlertCircle,
-  Eye,
-  EyeOff,
-  Search,
-  Share2,
-  FileCode,
-  Tag,
-  Image as ImageIcon,
-  Upload,
-  Monitor,
-  Smartphone,
-  Check,
-  RefreshCw
+  ShieldCheck, 
+  CreditCard, 
+  Gift, 
+  DollarSign, 
+  AlertCircle, 
+  Eye, 
+  EyeOff, 
+  Search, 
+  Share2, 
+  FileCode, 
+  Tag, 
+  Image as ImageIcon, 
+  Upload, 
+  Monitor, 
+  Smartphone, 
+  Check, 
+  RefreshCw,
+  Copy,
+  ExternalLink,
+  Lock
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { InstaLogo } from '@/components/common/InstaLogo';
+import { InstagramIcon, FacebookIcon } from '@/components/common/BrandIcons';
 
 export default function AdminSettingsPage() {
   const { 
@@ -41,6 +45,10 @@ export default function AdminSettingsPage() {
 
   const [settings, setSettings] = useState<AdminSettings>(INITIAL_ADMIN_SETTINGS);
   const [saved, setSaved] = useState(false);
+  const [showSecret, setShowSecret] = useState(false);
+  const [copiedWebhook, setCopiedWebhook] = useState(false);
+  const [copiedToken, setCopiedToken] = useState(false);
+  const [webhookTestStatus, setWebhookTestStatus] = useState<'idle' | 'testing' | 'success' | 'failed'>('idle');
 
   // Sync with localStorage & CurrencyContext on mount
   useEffect(() => {
@@ -62,6 +70,27 @@ export default function AdminSettingsPage() {
 
   const handleUpdate = (field: keyof AdminSettings, val: unknown) => {
     setSettings((prev) => ({ ...prev, [field]: val }));
+  };
+
+  const handleTestWebhook = async () => {
+    setWebhookTestStatus('testing');
+    try {
+      const token = settings.webhookVerifyToken || 'instadm_meta_verify_token_prod_2026';
+      const res = await fetch(`/api/webhooks/instagram?hub.mode=subscribe&hub.challenge=test_handshake_challenge&hub.verify_token=${encodeURIComponent(token)}`);
+      if (res.ok) {
+        const text = await res.text();
+        if (text === 'test_handshake_challenge') {
+          setWebhookTestStatus('success');
+        } else {
+          setWebhookTestStatus('failed');
+        }
+      } else {
+        setWebhookTestStatus('failed');
+      }
+    } catch {
+      setWebhookTestStatus('failed');
+    }
+    setTimeout(() => setWebhookTestStatus('idle'), 4500);
   };
 
   const handleFileUpload = (field: 'logoUrl' | 'faviconUrl' | 'metaBannerUrl', file: File) => {
@@ -784,6 +813,179 @@ export default function AdminSettingsPage() {
               />
               <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
             </label>
+          </div>
+        </div>
+
+        {/* META GRAPH API & INSTAGRAM CONNECTION SUITE */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <InstagramIcon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold text-slate-900">Meta Graph API &amp; Instagram OAuth 2.0</h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-mono">
+                    {settings.metaApiVersion || 'v21.0'}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500">
+                  Configure your central Meta Developer App credentials for the entire InstaDM platform.
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleTestWebhook}
+              disabled={webhookTestStatus === 'testing'}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2 transition-all shadow-xs ${
+                webhookTestStatus === 'success'
+                  ? 'bg-emerald-600 text-white'
+                  : webhookTestStatus === 'failed'
+                  ? 'bg-rose-600 text-white'
+                  : 'bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200'
+              }`}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${webhookTestStatus === 'testing' ? 'animate-spin' : ''}`} />
+              <span>
+                {webhookTestStatus === 'testing' && 'Verifying Webhook...'}
+                {webhookTestStatus === 'success' && '✓ Webhook Handshake Verified (200 OK)'}
+                {webhookTestStatus === 'failed' && '✕ Webhook Handshake Failed'}
+                {webhookTestStatus === 'idle' && 'Test Webhook Handshake'}
+              </span>
+            </button>
+          </div>
+
+          {/* How Meta API Architecture Works Infographic */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-slate-50 to-indigo-50 border border-purple-100 space-y-2">
+            <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-purple-600" />
+              <span>How Platform &amp; User Accounts Connect via Meta Graph API</span>
+            </span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-[11px] text-slate-600">
+              <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs space-y-1">
+                <span className="font-bold text-slate-900 block">1. Admin / Platform Setup (Here)</span>
+                <p>You create 1 Meta Developer App on developers.facebook.com and paste your central App ID &amp; Secret below.</p>
+              </div>
+              <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs space-y-1">
+                <span className="font-bold text-slate-900 block">2. Client / User Connects (Dashboard)</span>
+                <p>Clients log into their individual Instagram account via Meta OAuth in their dashboard without sharing passwords.</p>
+              </div>
+              <div className="p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs space-y-1">
+                <span className="font-bold text-slate-900 block">3. Automated Event Webhooks</span>
+                <p>When someone comments on a client's Reel or sends a DM, Meta notifies your webhook URL and InstaDM replies instantly.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Form Fields Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Meta App ID (from developers.facebook.com)
+              </label>
+              <input
+                type="text"
+                value={settings.metaAppId || ''}
+                onChange={(e) => handleUpdate('metaAppId', e.target.value)}
+                placeholder="e.g. 987123456789012"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold text-slate-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Found in your Meta Developer Dashboard under App Settings &gt; Basic.
+              </span>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-bold text-slate-700">Meta App Secret</label>
+                <button
+                  type="button"
+                  onClick={() => setShowSecret(!showSecret)}
+                  className="text-[11px] font-bold text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                >
+                  {showSecret ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                  <span>{showSecret ? 'Hide' : 'Reveal'}</span>
+                </button>
+              </div>
+              <input
+                type={showSecret ? 'text' : 'password'}
+                value={settings.metaAppSecret || '8f9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d'}
+                onChange={(e) => handleUpdate('metaAppSecret', e.target.value)}
+                placeholder="••••••••••••••••••••••••••••••••"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold text-slate-900 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Never shared publicly. Used on the server for OAuth token exchange.
+              </span>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-bold text-slate-700">Webhook Callback URL</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText('https://instadm.dev/api/webhooks/instagram');
+                    setCopiedWebhook(true);
+                    setTimeout(() => setCopiedWebhook(false), 2000);
+                  }}
+                  className="text-[11px] font-bold text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                >
+                  {copiedWebhook ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedWebhook ? 'Copied' : 'Copy URL'}</span>
+                </button>
+              </div>
+              <input
+                type="text"
+                readOnly
+                value="https://instadm.dev/api/webhooks/instagram"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono text-slate-700 bg-slate-50 select-all"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Paste this into Meta Developer App &gt; Webhooks &gt; Instagram.
+              </span>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-bold text-slate-700">Webhook Verify Token</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(settings.webhookVerifyToken || 'instadm_meta_verify_token_prod_2026');
+                    setCopiedToken(true);
+                    setTimeout(() => setCopiedToken(false), 2000);
+                  }}
+                  className="text-[11px] font-bold text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                >
+                  {copiedToken ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedToken ? 'Copied' : 'Copy Token'}</span>
+                </button>
+              </div>
+              <input
+                type="text"
+                value={settings.webhookVerifyToken || 'instadm_meta_verify_token_prod_2026'}
+                onChange={(e) => handleUpdate('webhookVerifyToken', e.target.value)}
+                placeholder="instadm_meta_verify_token_prod_2026"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold text-purple-700 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                The exact secret string you type into Meta when subscribing to webhooks.
+              </span>
+            </div>
+          </div>
+
+          {/* Meta Permissions List */}
+          <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Required Permissions:</span>
+            {['instagram_manage_messages', 'instagram_manage_comments', 'instagram_basic', 'pages_manage_metadata', 'pages_read_engagement'].map((perm) => (
+              <span key={perm} className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
+                {perm}
+              </span>
+            ))}
           </div>
         </div>
 

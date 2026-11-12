@@ -631,6 +631,8 @@ export const INITIAL_ADMIN_SETTINGS: AdminSettings = {
   supportEmail: 'support@instadm.dev',
   openAiApiKeyConfigured: true,
   metaAppId: 'app_meta_91823740192',
+  metaAppSecret: '8f9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d',
+  metaApiVersion: 'v21.0',
   webhookVerifyToken: 'instadm_meta_verify_token_prod_2026',
   currencyPolicy: 'AUTO_GEO',
   allowManualSwitcher: false,

@@ -236,6 +236,8 @@ export interface AdminSettings {
   supportEmail: string;
   openAiApiKeyConfigured: boolean;
   metaAppId: string;
+  metaAppSecret?: string;
+  metaApiVersion?: string;
   webhookVerifyToken: string;
   currencyPolicy: 'AUTO_GEO' | 'FORCE_USD' | 'FORCE_INR';
   allowManualSwitcher: boolean;
