@@ -809,16 +809,16 @@ export default function AdminSettingsPage() {
               <div className="relative">
                 <input
                   type="number"
-                  min="5"
-                  max="70"
-                  value={settings.affiliateCommissionRate || 30}
+                  min="1"
+                  max="100"
+                  value={settings.affiliateCommissionRate ?? 30}
                   onChange={(e) => handleUpdate('affiliateCommissionRate', Number(e.target.value))}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">%</span>
               </div>
               <span className="text-[10px] text-slate-400 mt-1 block">
-                Standard industry standard is 30% lifetime recurring commission.
+                Reflected site-wide on all user screens, Refer &amp; Earn dashboard, and commission ledgers.
               </span>
             </div>
 

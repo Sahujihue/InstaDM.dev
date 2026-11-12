@@ -17,6 +17,18 @@ export default function SignupPage() {
   const [agreed, setAgreed] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref') || localStorage.getItem('instadm_active_referrer');
+      if (ref) {
+        setReferralCode(ref);
+        localStorage.setItem('instadm_active_referrer', ref);
+      }
+    } catch {}
+  }, []);
 
   const handleGoogleSignup = async () => {
     setLoading(true);
@@ -31,6 +43,27 @@ export default function SignupPage() {
 
     try {
       await signup(name, email, password);
+
+      // Track referral signup (Free Trial - Commission 0 until subscription purchase)
+      try {
+        const storedRefs = localStorage.getItem('instadm_referral_records');
+        const refs = storedRefs ? JSON.parse(storedRefs) : [];
+        const maskedEmail = email.includes('@') 
+          ? `${email.slice(0, 2)}***@${email.split('@')[1]}` 
+          : email;
+        const newRef = {
+          id: `ref-${Date.now()}`,
+          referredUserName: name,
+          referredUserEmail: maskedEmail,
+          plan: 'free',
+          date: new Date().toISOString().split('T')[0],
+          commissionAmount: 0,
+          status: 'TRIAL'
+        };
+        localStorage.setItem('instadm_referral_records', JSON.stringify([newRef, ...refs]));
+        window.dispatchEvent(new Event('instadm_settings_updated'));
+      } catch {}
+
       setShowVerificationModal(true);
     } finally {
       setLoading(false);
@@ -63,6 +96,14 @@ export default function SignupPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-6 shadow-xl shadow-purple-500/5 rounded-3xl border border-slate-200/90 sm:px-10">
           
+          {/* Referral Partner Badge if referred */}
+          {referralCode && (
+            <div className="mb-5 p-3 rounded-2xl bg-purple-50 border border-purple-200/80 flex items-center gap-2 text-xs text-purple-800 font-bold">
+              <span className="text-base">🎁</span>
+              <span>Invited by partner <strong className="text-purple-600 underline font-mono">@{referralCode}</strong></span>
+            </div>
+          )}
+
           {/* Continue with Google */}
           <button
             type="button"

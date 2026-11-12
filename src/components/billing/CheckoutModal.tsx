@@ -120,6 +120,37 @@ export function CheckoutModal({
       setIsProcessing(false);
       setPaymentSuccess(true);
 
+      // Credit referral commission when subscription is purchased
+      try {
+        const storedSettings = localStorage.getItem('instadm_admin_settings');
+        const commRate = storedSettings ? (JSON.parse(storedSettings).affiliateCommissionRate || 30) : 30;
+        const commAmount = Math.round((priceAmount * commRate) / 100);
+
+        const storedRefs = localStorage.getItem('instadm_referral_records');
+        if (storedRefs) {
+          const parsedRefs = JSON.parse(storedRefs);
+          let updated = false;
+          const newRefs = parsedRefs.map((r: { id: string; plan: string; status: string; commissionAmount: number }) => {
+            if (!updated && r.status === 'TRIAL') {
+              updated = true;
+              return {
+                ...r,
+                plan: planId,
+                status: 'PAID',
+                commissionAmount: commAmount
+              };
+            }
+            return r;
+          });
+          if (updated) {
+            localStorage.setItem('instadm_referral_records', JSON.stringify(newRefs));
+            window.dispatchEvent(new Event('instadm_settings_updated'));
+          }
+        }
+      } catch {
+        // ignore
+      }
+
       try {
         confetti({
           particleCount: 70,

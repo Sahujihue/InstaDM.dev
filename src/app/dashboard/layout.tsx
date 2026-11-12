@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { InstaLogo } from '@/components/common/InstaLogo';
@@ -37,6 +37,31 @@ export default function DashboardLayout({
   const router = useRouter();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [commissionRate, setCommissionRate] = useState<number>(30);
+
+  useEffect(() => {
+    const loadCommissionRate = () => {
+      try {
+        const stored = localStorage.getItem('instadm_admin_settings');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed.affiliateCommissionRate) {
+            setCommissionRate(Number(parsed.affiliateCommissionRate));
+          }
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    loadCommissionRate();
+    window.addEventListener('instadm_settings_updated', loadCommissionRate);
+    window.addEventListener('storage', loadCommissionRate);
+    return () => {
+      window.removeEventListener('instadm_settings_updated', loadCommissionRate);
+      window.removeEventListener('storage', loadCommissionRate);
+    };
+  }, []);
 
   const navItems = [
     { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -47,7 +72,7 @@ export default function DashboardLayout({
     { label: 'DM Live Inbox', href: '/dashboard/inbox', icon: MessageSquare },
     { label: 'AI Assistant', href: '/dashboard/ai-assistant', icon: Bot, badge: 'GPT-4o' },
     { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
-    { label: 'Refer & Earn', href: '/dashboard/referrals', icon: Gift, badge: '30% Comm' },
+    { label: 'Refer & Earn', href: '/dashboard/referrals', icon: Gift, badge: `${commissionRate}% Comm` },
     { label: 'Integrations', href: '/dashboard/integrations', icon: Sliders },
     { label: 'Billing & Plans', href: '/dashboard/billing', icon: CreditCard },
     { label: 'Settings', href: '/dashboard/settings', icon: Settings },
