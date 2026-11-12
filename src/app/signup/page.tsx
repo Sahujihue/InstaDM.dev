@@ -1,0 +1,183 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { InstaLogo } from '@/components/common/InstaLogo';
+import { useAuth } from '@/context/AuthContext';
+import { ArrowRight, Lock, Mail, User, ShieldCheck, CheckCircle2 } from 'lucide-react';
+
+export default function SignupPage() {
+  const router = useRouter();
+  const { signup } = useAuth();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [agreed, setAgreed] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !email || !password) return;
+    setLoading(true);
+
+    try {
+      await signup(name, email, password);
+      setShowVerificationModal(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProceedToDashboard = () => {
+    router.push('/dashboard');
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-purple-50/40 via-white to-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      
+      {/* Brand Header */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <div className="flex justify-center mb-4">
+          <InstaLogo />
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          Create Your InstaDM Account
+        </h2>
+        <p className="mt-2 text-sm text-slate-600">
+          Already have an account?{' '}
+          <Link href="/login" className="font-bold text-purple-600 hover:text-purple-500">
+            Sign In here
+          </Link>
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-6 shadow-xl shadow-purple-500/5 rounded-3xl border border-slate-200/90 sm:px-10">
+          
+          <form className="space-y-4" onSubmit={handleRegister}>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Full Name
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Sarah Jenkins"
+                  required
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500 pl-10"
+                />
+                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Email Address
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="sarah@example.com"
+                  required
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500 pl-10"
+                />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create a strong password"
+                  required
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500 pl-10"
+                />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+
+            <div className="flex items-start">
+              <input
+                id="terms-check"
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                required
+                className="h-4 w-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500 mt-0.5"
+              />
+              <label htmlFor="terms-check" className="ml-2 block text-xs text-slate-600 leading-relaxed">
+                I agree to the{' '}
+                <Link href="/terms" className="text-purple-600 font-semibold hover:underline">
+                  Terms of Service
+                </Link>{' '}
+                and{' '}
+                <Link href="/privacy" className="text-purple-600 font-semibold hover:underline">
+                  Privacy Policy
+                </Link>
+                .
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-md shadow-purple-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            >
+              <span>{loading ? 'Creating Account...' : 'Get Started Free'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </form>
+
+          {/* Social Proof Note */}
+          <div className="mt-6 pt-6 border-t border-slate-100 text-center">
+            <p className="text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              No credit card required • Instant 14-day trial
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Email Verification Modal */}
+      {showVerificationModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-purple-200 text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+
+            <h3 className="text-xl font-bold text-slate-900">
+              Welcome to InstaDM, {name}!
+            </h3>
+
+            <p className="text-sm text-slate-600 leading-relaxed">
+              We&apos;ve sent a confirmation email to <strong className="text-purple-600">{email}</strong>. For your convenience, your account has been pre-activated so you can connect your Instagram account immediately.
+            </p>
+
+            <button
+              onClick={handleProceedToDashboard}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-sm shadow-md hover:from-purple-500 hover:to-indigo-500 transition-all flex items-center justify-center gap-2"
+            >
+              <span>Open My Dashboard</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
