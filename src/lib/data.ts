@@ -1,4 +1,170 @@
-import { PricingPlan, Testimonial, FaqItem, InstagramAccount, Automation, ContactLead, AdminSettings, InstagramPost } from '@/types';
+import { 
+  PricingPlan, 
+  Testimonial, 
+  FaqItem, 
+  InstagramAccount, 
+  Automation, 
+  ContactLead, 
+  AdminSettings, 
+  InstagramPost,
+  PaymentGatewayConfig,
+  PaymentTransaction
+} from '@/types';
+
+export const INITIAL_PAYMENT_GATEWAYS: PaymentGatewayConfig[] = [
+  {
+    id: 'razorpay',
+    name: 'Razorpay',
+    category: 'india',
+    enabled: true,
+    mode: 'live',
+    currencies: ['INR'],
+    publishableKey: 'rzp_live_instadm_9812401928',
+    secretKey: 'rzp_sec_••••••••••••••••••••••••',
+    merchantId: 'MID_RZP_982183',
+    webhookSecret: 'whsec_rzp_prod_instadm_2026',
+    supportedMethods: ['UPI (GPay, PhonePe, Paytm)', 'Cards (Visa, Mastercard, RuPay)', 'Netbanking (60+ Banks)', 'EMI & PayLater'],
+    description: 'Premier Indian payment gateway with instant UPI QR & recurring subscription autopay.'
+  },
+  {
+    id: 'stripe',
+    name: 'Stripe',
+    category: 'global',
+    enabled: true,
+    mode: 'live',
+    currencies: ['USD', 'EUR', 'INR'],
+    publishableKey: 'pk_live_instadm_stripe_51Nu29841',
+    secretKey: 'sk_live_••••••••••••••••••••••••',
+    webhookSecret: 'whsec_stripe_prod_instadm_2026',
+    supportedMethods: ['Credit & Debit Cards', 'Apple Pay', 'Google Pay', 'Link by Stripe', 'SEPA Direct Debit'],
+    description: 'Gold standard global billing infrastructure supporting 135+ currencies and 1-tap checkout.'
+  },
+  {
+    id: 'paypal',
+    name: 'PayPal',
+    category: 'global',
+    enabled: true,
+    mode: 'live',
+    currencies: ['USD', 'EUR'],
+    publishableKey: 'client_id_paypal_instadm_prod',
+    secretKey: 'secret_••••••••••••••••••••••••',
+    webhookSecret: 'whsec_paypal_prod_instadm_2026',
+    supportedMethods: ['PayPal Balance', 'PayPal Credit', 'Pay in 4', 'International Visa/Mastercard'],
+    description: 'Trusted by 400M+ international consumers across North America, Europe, and Asia.'
+  },
+  {
+    id: 'cashfree',
+    name: 'Cashfree Payments',
+    category: 'india',
+    enabled: true,
+    mode: 'live',
+    currencies: ['INR'],
+    publishableKey: 'cf_app_id_instadm_live_9812',
+    secretKey: 'cf_sec_••••••••••••••••••••••••',
+    merchantId: 'CF_MERCHANT_1092',
+    webhookSecret: 'whsec_cashfree_prod_instadm_2026',
+    supportedMethods: ['UPI Autopay', 'Instant UPI QR', 'Debit/Credit Cards', 'Netbanking'],
+    description: 'Fast, high-uptime Indian payment gateway with native UPI subscription mandates.'
+  },
+  {
+    id: 'payu',
+    name: 'PayU India',
+    category: 'india',
+    enabled: true,
+    mode: 'live',
+    currencies: ['INR'],
+    publishableKey: 'payu_key_instadm_live_8912',
+    secretKey: 'payu_salt_••••••••••••••••••••',
+    merchantId: 'PAYU_MID_4821',
+    webhookSecret: 'whsec_payu_prod_instadm_2026',
+    supportedMethods: ['UPI', 'Credit/Debit Cards', 'Netbanking', 'Wallets'],
+    description: 'Enterprise payment aggregator in India powering millions of daily transactions.'
+  },
+  {
+    id: 'crypto',
+    name: 'Crypto & Web3 (USDT / BTC / ETH)',
+    category: 'crypto',
+    enabled: true,
+    mode: 'live',
+    currencies: ['USD', 'CRYPTO'],
+    publishableKey: 'coinbase_commerce_api_key_instadm',
+    secretKey: 'cc_sec_••••••••••••••••••••••••',
+    webhookSecret: 'whsec_crypto_prod_instadm_2026',
+    supportedMethods: ['USDT (TRC-20 & ERC-20)', 'USDC', 'Bitcoin (BTC)', 'Ethereum (ETH)', 'Solana (SOL)'],
+    description: 'Direct zero-chargeback cryptocurrency payments via Coinbase Commerce & Web3 QR codes.'
+  },
+  {
+    id: 'paddle',
+    name: 'Paddle (Merchant of Record)',
+    category: 'global',
+    enabled: false,
+    mode: 'sandbox',
+    currencies: ['USD', 'EUR'],
+    publishableKey: 'paddle_vendor_id_instadm',
+    secretKey: 'paddle_api_key_••••••••••••••••',
+    webhookSecret: 'whsec_paddle_sandbox_instadm',
+    supportedMethods: ['Global Cards', 'PayPal', 'Apple Pay', 'Wire Transfer'],
+    description: 'All-in-one Merchant of Record that handles international sales tax, VAT, and invoice compliance.'
+  }
+];
+
+export const INITIAL_PAYMENT_TRANSACTIONS: PaymentTransaction[] = [
+  {
+    id: 'tx_rzp_981240',
+    gateway: 'razorpay',
+    amount: 1499,
+    currency: 'INR',
+    status: 'COMPLETED',
+    planId: 'pro',
+    userEmail: 'priya@fitlifewellness.in',
+    createdAt: '2026-11-12 11:24',
+    paymentMethodDetails: 'UPI Autopay • priya@okhdfcbank'
+  },
+  {
+    id: 'tx_str_892182',
+    gateway: 'stripe',
+    amount: 29.99,
+    currency: 'USD',
+    status: 'COMPLETED',
+    planId: 'pro',
+    userEmail: 'alex@creatorstudio.co',
+    createdAt: '2026-11-12 09:40',
+    paymentMethodDetails: 'Mastercard •••• 4242'
+  },
+  {
+    id: 'tx_cry_781290',
+    gateway: 'crypto',
+    amount: 79.99,
+    currency: 'USDT',
+    status: 'COMPLETED',
+    planId: 'agency',
+    userEmail: 'elena@designlab.io',
+    createdAt: '2026-11-11 18:15',
+    paymentMethodDetails: 'USDT (TRC20) • 0x7a8b...4f21'
+  },
+  {
+    id: 'tx_pp_671294',
+    gateway: 'paypal',
+    amount: 9.99,
+    currency: 'USD',
+    status: 'COMPLETED',
+    planId: 'starter',
+    userEmail: 'marcus@vancestreetwear.com',
+    createdAt: '2026-11-11 14:02',
+    paymentMethodDetails: 'PayPal Wallet • marcus@vancestreetwear.com'
+  },
+  {
+    id: 'tx_cf_541920',
+    gateway: 'cashfree',
+    amount: 499,
+    currency: 'INR',
+    status: 'COMPLETED',
+    planId: 'starter',
+    userEmail: 'rohit@fitlife.in',
+    createdAt: '2026-11-10 16:30',
+    paymentMethodDetails: 'UPI QR • PhonePe'
+  }
+];
 
 export const INITIAL_INSTAGRAM_POSTS: InstagramPost[] = [
   {

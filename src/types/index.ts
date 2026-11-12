@@ -134,6 +134,35 @@ export interface FaqItem {
   category: 'general' | 'technical' | 'billing' | 'compliance';
 }
 
+export type PaymentGatewayId = 'stripe' | 'razorpay' | 'paypal' | 'cashfree' | 'payu' | 'crypto' | 'paddle';
+
+export interface PaymentGatewayConfig {
+  id: PaymentGatewayId;
+  name: string;
+  category: 'global' | 'india' | 'crypto';
+  enabled: boolean;
+  mode: 'sandbox' | 'live';
+  currencies: ('INR' | 'USD' | 'EUR' | 'CRYPTO')[];
+  publishableKey: string;
+  secretKey: string;
+  merchantId?: string;
+  webhookSecret: string;
+  supportedMethods: string[];
+  description: string;
+}
+
+export interface PaymentTransaction {
+  id: string;
+  gateway: PaymentGatewayId;
+  amount: number;
+  currency: 'INR' | 'USD' | 'USDT';
+  status: 'COMPLETED' | 'PENDING' | 'FAILED' | 'REFUNDED';
+  planId: string;
+  userEmail: string;
+  createdAt: string;
+  paymentMethodDetails: string;
+}
+
 export interface WebhookLog {
   id: string;
   timestamp: string;

@@ -16,16 +16,35 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+import { CheckoutModal } from '@/components/billing/CheckoutModal';
+
 export default function BillingPage() {
   const { user, updateUserPlan } = useAuth();
   const { currency, setCurrency, isYearly, setIsYearly, formatPrice } = useCurrency();
   const [activePlan, setActivePlan] = useState(user?.plan || 'pro');
 
-  const handleSelectPlan = (planId: 'free' | 'starter' | 'pro' | 'agency') => {
+  // Checkout modal state
+  const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
+  const [selectedPlanForCheckout, setSelectedPlanForCheckout] = useState<{
+    id: 'starter' | 'pro' | 'agency';
+    name: string;
+    price: number;
+  }>({
+    id: 'pro',
+    name: 'Pro',
+    price: 29.99
+  });
+
+  const handleOpenCheckout = (planId: 'starter' | 'pro' | 'agency', planName: string, price: number) => {
+    setSelectedPlanForCheckout({ id: planId, name: planName, price });
+    setCheckoutModalOpen(true);
+  };
+
+  const handleCheckoutSuccess = (planId: 'starter' | 'pro' | 'agency') => {
     setActivePlan(planId);
     updateUserPlan(planId, isYearly ? 'yearly' : 'monthly');
     try {
-      confetti({ particleCount: 50, spread: 60 });
+      confetti({ particleCount: 60, spread: 70 });
     } catch {}
   };
 
@@ -167,14 +186,14 @@ export default function BillingPage() {
                 <button
                   type="button"
                   disabled={isCurrent}
-                  onClick={() => handleSelectPlan(plan.id as 'free' | 'starter' | 'pro' | 'agency')}
+                  onClick={() => handleOpenCheckout(plan.id as 'starter' | 'pro' | 'agency', plan.name, price)}
                   className={`w-full py-2.5 rounded-xl font-bold text-xs transition-colors ${
                     isCurrent
                       ? 'bg-slate-100 text-slate-400 cursor-default'
                       : 'bg-purple-600 hover:bg-purple-700 text-white shadow-xs'
                   }`}
                 >
-                  {isCurrent ? 'Current Plan' : `Switch to ${plan.name}`}
+                  {isCurrent ? 'Current Plan' : `Subscribe with Gateway (${plan.name})`}
                 </button>
               </div>
             );
@@ -217,6 +236,17 @@ export default function BillingPage() {
           ))}
         </div>
       </div>
+
+      {/* Multi-Gateway Checkout Modal */}
+      <CheckoutModal
+        isOpen={checkoutModalOpen}
+        onClose={() => setCheckoutModalOpen(false)}
+        planId={selectedPlanForCheckout.id}
+        planName={selectedPlanForCheckout.name}
+        priceAmount={selectedPlanForCheckout.price}
+        billingCycle={isYearly ? 'yearly' : 'monthly'}
+        onSuccess={handleCheckoutSuccess}
+      />
 
     </div>
   );

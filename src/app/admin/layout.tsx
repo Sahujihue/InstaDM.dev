@@ -18,6 +18,7 @@ import {
   ExternalLink,
   ChevronRight,
   Sparkles,
+  Sliders,
   Menu,
   X
 } from 'lucide-react';
@@ -34,7 +35,8 @@ export default function AdminLayout({
 
   const adminNav = [
     { label: 'Admin Overview', href: '/admin', icon: LayoutDashboard },
-    { label: 'Pricing & Plans Manager', href: '/admin/pricing', icon: CreditCard, badge: 'Live Config' },
+    { label: 'Payment Gateways', href: '/admin/payments', icon: CreditCard, badge: 'Gateways' },
+    { label: 'Pricing & Plans Manager', href: '/admin/pricing', icon: Sliders, badge: 'Live Config' },
     { label: 'User Management', href: '/admin/users', icon: Users },
     { label: 'Testimonials Manager', href: '/admin/testimonials', icon: MessageSquare },
     { label: 'FAQ Manager', href: '/admin/faqs', icon: HelpCircle },
