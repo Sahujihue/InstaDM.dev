@@ -609,6 +609,12 @@ export const INITIAL_LEADS: ContactLead[] = [
 
 export const INITIAL_ADMIN_SETTINGS: AdminSettings = {
   siteTitle: 'InstaDM – Turn Every Instagram Interaction Into a Customer | instadm.dev',
+  brandName: 'InstaDM',
+  brandSuffix: '.dev',
+  logoUrl: '',
+  faviconUrl: '/favicon.ico',
+  metaBannerUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&h=630&q=85',
+  heroBannerUrl: '',
   metaKeywords: 'instagram dm automation, instagram comment to dm, meta graph api automation, reel comment automation, ig dm bot, instagram lead generation, social media automation, automated direct messages',
   metaDescription: 'Automate Instagram DMs, reply to comments instantly, capture leads, and convert followers into customers — all on autopilot with official Meta Graph API v21.0.',
   canonicalUrl: 'https://instadm.dev',

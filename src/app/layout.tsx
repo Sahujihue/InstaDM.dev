@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { CurrencyProvider } from '@/context/CurrencyContext';
+import { DynamicHeadManager } from '@/components/common/DynamicHeadManager';
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -75,6 +76,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-white text-slate-900 antialiased selection:bg-purple-500 selection:text-white">
+        <DynamicHeadManager />
         <AuthProvider>
           <CurrencyProvider>
             {children}

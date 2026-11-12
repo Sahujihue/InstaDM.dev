@@ -214,6 +214,12 @@ export interface CmsPage {
 
 export interface AdminSettings {
   siteTitle: string;
+  brandName: string;
+  brandSuffix: string;
+  logoUrl?: string;
+  faviconUrl?: string;
+  metaBannerUrl?: string;
+  heroBannerUrl?: string;
   metaKeywords: string;
   metaDescription: string;
   canonicalUrl: string;
