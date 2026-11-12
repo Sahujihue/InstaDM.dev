@@ -26,10 +26,25 @@ export interface InstagramAccount {
   webhookActive: boolean;
 }
 
+export interface InstagramPost {
+  id: string;
+  type: 'REEL' | 'CAROUSEL' | 'IMAGE' | 'STORY';
+  thumbnail: string;
+  caption: string;
+  postedAt: string;
+  likesCount: number;
+  commentsCount: number;
+  url: string;
+}
+
 export interface Automation {
   id: string;
   name: string;
   type: 'COMMENT_TO_DM' | 'STORY_REPLY' | 'DM_KEYWORD' | 'FOLLOW_FOR_LINK' | 'LIVE_COMMENT';
+  targetScope?: 'SPECIFIC_POST' | 'ALL_POSTS' | 'NEXT_POST' | 'SPECIFIC_STORY' | 'ALL_STORIES';
+  selectedPostId?: string;
+  selectedPostThumbnail?: string;
+  selectedPostCaption?: string;
   triggerKeywords: string[];
   matchType: 'EXACT' | 'CONTAINS' | 'ANY';
   replyMessage: string;
@@ -38,6 +53,7 @@ export interface Automation {
   requireFollow: boolean;
   captureLead: boolean;
   leadFields?: ('email' | 'phone' | 'name')[];
+  publicCommentReplies?: string[];
   status: 'ACTIVE' | 'PAUSED' | 'DRAFT';
   totalTriggers: number;
   totalDelivered: number;

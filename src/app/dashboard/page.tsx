@@ -22,57 +22,21 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+import { CreateAutomationModal } from '@/components/dashboard/CreateAutomationModal';
+import { Automation } from '@/types';
+
 export default function DashboardOverviewPage() {
   const { user } = useAuth();
-  const [automations, setAutomations] = useState(INITIAL_AUTOMATIONS);
+  const [automations, setAutomations] = useState<Automation[]>(INITIAL_AUTOMATIONS);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newAutoName, setNewAutoName] = useState('');
-  const [newAutoKeyword, setNewAutoKeyword] = useState('');
-  const [newAutoReply, setNewAutoReply] = useState('');
-  const [newAutoButtonText, setNewAutoButtonText] = useState('Download Free Guide');
-  const [newAutoButtonUrl, setNewAutoButtonUrl] = useState('https://instadm.dev/resources/guide.pdf');
 
   // Stats calculation
   const totalDms = automations.reduce((acc, curr) => acc + curr.totalDelivered, 0);
   const activeAutomationsCount = automations.filter(a => a.status === 'ACTIVE').length;
   const totalLeads = INITIAL_LEADS.length + 3842; // base + sample
 
-  const handleCreateAutomation = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newAutoName || !newAutoKeyword || !newAutoReply) return;
-
-    const newObj = {
-      id: `auto-${Date.now()}`,
-      name: newAutoName,
-      type: 'COMMENT_TO_DM' as const,
-      triggerKeywords: [newAutoKeyword.toUpperCase()],
-      matchType: 'CONTAINS' as const,
-      replyMessage: newAutoReply,
-      buttonText: newAutoButtonText,
-      buttonUrl: newAutoButtonUrl,
-      requireFollow: true,
-      captureLead: true,
-      leadFields: ['email'] as ('email' | 'phone' | 'name')[],
-      status: 'ACTIVE' as const,
-      totalTriggers: 1,
-      totalDelivered: 1,
-      linkClicks: 0,
-      leadsCollected: 0,
-      createdAt: 'Just now',
-      instagramAccountId: 'ig-acc-1',
-    };
-
-    setAutomations([newObj, ...automations]);
-    setShowCreateModal(false);
-    setNewAutoName('');
-    setNewAutoKeyword('');
-    setNewAutoReply('');
-
-    try {
-      confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
-    } catch {
-      // ignore
-    }
+  const handleSaveAutomation = (newAuto: Automation) => {
+    setAutomations([newAuto, ...automations]);
   };
 
   return (
@@ -274,112 +238,12 @@ export default function DashboardOverviewPage() {
 
       </div>
 
-      {/* Quick Create Automation Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-purple-200 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
-                  <Zap className="w-4 h-4" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900">Quick Create Automation</h3>
-              </div>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateAutomation} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Campaign / Automation Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newAutoName}
-                  onChange={(e) => setNewAutoName(e.target.value)}
-                  placeholder="e.g. Black Friday 25% Coupon"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Trigger Keyword (Comment or DM)
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newAutoKeyword}
-                  onChange={(e) => setNewAutoKeyword(e.target.value.toUpperCase())}
-                  placeholder="e.g. VIP or LINK"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm uppercase font-mono font-bold focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Automated Direct Message Reply
-                </label>
-                <textarea
-                  rows={3}
-                  required
-                  value={newAutoReply}
-                  onChange={(e) => setNewAutoReply(e.target.value)}
-                  placeholder="Hey there! Thanks for your comment. Here is your private download link:"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Button Label
-                  </label>
-                  <input
-                    type="text"
-                    value={newAutoButtonText}
-                    onChange={(e) => setNewAutoButtonText(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Button Destination URL
-                  </label>
-                  <input
-                    type="url"
-                    value={newAutoButtonUrl}
-                    onChange={(e) => setNewAutoButtonUrl(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md shadow-purple-500/20"
-                >
-                  Save &amp; Activate Automation
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Create Automation Modal with Post & Story Selector */}
+      <CreateAutomationModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSave={handleSaveAutomation}
+      />
 
     </div>
   );

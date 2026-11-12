@@ -1,4 +1,70 @@
-import { PricingPlan, Testimonial, FaqItem, InstagramAccount, Automation, ContactLead, AdminSettings } from '@/types';
+import { PricingPlan, Testimonial, FaqItem, InstagramAccount, Automation, ContactLead, AdminSettings, InstagramPost } from '@/types';
+
+export const INITIAL_INSTAGRAM_POSTS: InstagramPost[] = [
+  {
+    id: 'post_104',
+    type: 'REEL',
+    thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80',
+    caption: 'Drop "LINK" below to get our complete 2026 Instagram Growth Playbook (45 Pages + 12 Reel templates) sent straight to your DMs! 🚀',
+    postedAt: '2 days ago',
+    likesCount: 1420,
+    commentsCount: 684,
+    url: 'https://instagram.com/reel/C89xYz124'
+  },
+  {
+    id: 'post_103',
+    type: 'CAROUSEL',
+    thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80',
+    caption: '7 DM automation funnels that converted $140,000+ in course sales this month. Comment "FUNNEL" for the full breakdown slide deck. 📊',
+    postedAt: '4 days ago',
+    likesCount: 2890,
+    commentsCount: 940,
+    url: 'https://instagram.com/p/C85aBc392'
+  },
+  {
+    id: 'post_102',
+    type: 'REEL',
+    thumbnail: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=300&q=80',
+    caption: 'Flash Sale: 30% Off Everything This Weekend! Comment "VIP" below to receive your private checkout coupon code right now in your DMs. 🎉',
+    postedAt: '1 week ago',
+    likesCount: 4210,
+    commentsCount: 1840,
+    url: 'https://instagram.com/reel/C82kLm401'
+  },
+  {
+    id: 'post_101',
+    type: 'IMAGE',
+    thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=300&q=80',
+    caption: 'Accepting 5 high-ticket coaching clients for our Q1 Growth Mastermind. Comment "COACH" to view the curriculum and book your call.',
+    postedAt: '2 weeks ago',
+    likesCount: 1120,
+    commentsCount: 420,
+    url: 'https://instagram.com/p/C79xPq112'
+  }
+];
+
+export const INITIAL_INSTAGRAM_STORIES: InstagramPost[] = [
+  {
+    id: 'story_active_1',
+    type: 'STORY',
+    thumbnail: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=300&q=80',
+    caption: 'Behind the scenes: Recording tomorrow’s masterclass! Reply "JOIN" to get your guest pass.',
+    postedAt: '3 hours ago (Expires in 21h)',
+    likesCount: 340,
+    commentsCount: 182,
+    url: 'https://instagram.com/stories/themoderncreator'
+  },
+  {
+    id: 'story_active_2',
+    type: 'STORY',
+    thumbnail: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=300&q=80',
+    caption: 'Ask me anything about scaling DM lead gen! Drop a reply with your question below.',
+    postedAt: '7 hours ago (Expires in 17h)',
+    likesCount: 215,
+    commentsCount: 95,
+    url: 'https://instagram.com/stories/themoderncreator'
+  }
+];
 
 export const INITIAL_PRICING_PLANS: PricingPlan[] = [
   {
