@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { INITIAL_PRICING_PLANS } from '@/lib/data';
 import { PricingPlan } from '@/types';
 import { 
@@ -10,14 +10,51 @@ import {
   Plus, 
   Trash2, 
   Sparkles,
-  Sliders
+  Sliders,
+  RotateCcw,
+  ExternalLink
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { getStoredPricingPlans, getStoredDiscountPercent, saveStoredPricingPlans } from '@/lib/pricing';
+import { getSupabaseClient } from '@/lib/supabase';
 
 export default function AdminPricingPage() {
   const [plans, setPlans] = useState<PricingPlan[]>(INITIAL_PRICING_PLANS);
   const [discountPercent, setDiscountPercent] = useState<number>(17);
   const [saved, setSaved] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // 1. Load persisted pricing configurations from localStorage and Supabase
+  useEffect(() => {
+    const loadedPlans = getStoredPricingPlans();
+    const loadedDiscount = getStoredDiscountPercent();
+    setPlans(loadedPlans);
+    setDiscountPercent(loadedDiscount);
+    setIsLoaded(true);
+
+    // Fetch latest from Supabase if online
+    const fetchRemote = async () => {
+      try {
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const { data } = await supabase
+            .from('platform_settings')
+            .select('value')
+            .eq('key', 'pricing_plans')
+            .single();
+
+          if (data?.value?.plans && Array.isArray(data.value.plans)) {
+            setPlans(data.value.plans);
+            if (data.value.discount !== undefined) {
+              setDiscountPercent(data.value.discount);
+            }
+          }
+        }
+      } catch {}
+    };
+
+    fetchRemote();
+  }, []);
 
   const handlePriceChange = (
     planId: string, 
@@ -59,17 +96,30 @@ export default function AdminPricingPage() {
     }));
   };
 
-  const handleSaveAll = (e: React.FormEvent) => {
+  // Save changes permanently to localStorage and Supabase
+  const handleSaveAll = async (e: React.FormEvent) => {
     e.preventDefault();
+    await saveStoredPricingPlans(plans, discountPercent);
     setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setTimeout(() => setSaved(false), 3500);
     try {
-      confetti({ particleCount: 40, spread: 50 });
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
     } catch {}
   };
 
+  // Reset to system defaults
+  const handleResetDefaults = () => {
+    if (confirm('Reset all pricing plans to default initial values?')) {
+      setPlans(INITIAL_PRICING_PLANS);
+      setDiscountPercent(17);
+      saveStoredPricingPlans(INITIAL_PRICING_PLANS, 17);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    }
+  };
+
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-16">
       
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -78,23 +128,46 @@ export default function AdminPricingPage() {
             Pricing &amp; Plans Live Manager
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Edit monthly and annual subscription rates in INR and USD, toggle plan limits, and adjust annual discount rates live without touching source code.
+            Edit subscription rates in INR &amp; USD. Changes instantly reflect across Homepage, Dashboard, and Checkout!
           </p>
         </div>
 
-        <button
-          onClick={handleSaveAll}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-purple-500/25 transition-all self-start sm:self-auto"
-        >
-          <Save className="w-4 h-4" />
-          <span>Save Changes Live</span>
-        </button>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={handleResetDefaults}
+            className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all flex items-center gap-1.5"
+            title="Reset to default plans"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset Defaults</span>
+          </button>
+
+          <button
+            onClick={handleSaveAll}
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-purple-500/25 transition-all hover:scale-105"
+          >
+            <Save className="w-4 h-4" />
+            <span>Save Changes Live</span>
+          </button>
+        </div>
       </div>
 
       {saved && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 animate-in fade-in duration-200">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-          <span>All pricing configurations saved and updated live across the marketing website and checkout!</span>
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between shadow-2xs animate-in fade-in duration-200">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+            <span>All pricing configurations saved! Updated live across Homepage, User Dashboard, and Gateway Checkout.</span>
+          </div>
+          <a
+            href="/#pricing"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-emerald-700 hover:underline font-bold text-xs shrink-0"
+          >
+            <span>View Live on Homepage</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
         </div>
       )}
 
@@ -102,14 +175,16 @@ export default function AdminPricingPage() {
       <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-bold text-slate-900">Annual Subscription Savings Discount</h3>
-          <p className="text-xs text-slate-500">Calculated automatically on checkout and banner pills</p>
+          <p className="text-xs text-slate-500">Badge percentage shown on Annual Billing toggle throughout the website</p>
         </div>
         <div className="flex items-center gap-2">
           <input
             type="number"
+            min="0"
+            max="100"
             value={discountPercent}
             onChange={(e) => setDiscountPercent(Number(e.target.value))}
-            className="w-20 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-center"
+            className="w-20 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-center focus:ring-2 focus:ring-purple-500 focus:outline-none"
           />
           <span className="text-xs font-bold text-slate-700">% OFF</span>
         </div>
@@ -137,23 +212,23 @@ export default function AdminPricingPage() {
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Monthly ($)</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">Monthly ($)</span>
                     <input
                       type="number"
                       step="0.01"
                       value={plan.priceUSD.monthly}
                       onChange={(e) => handlePriceChange(plan.id, 'USD', 'monthly', parseFloat(e.target.value) || 0)}
-                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold"
+                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold focus:ring-2 focus:ring-purple-500 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Yearly / mo ($)</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">Yearly / mo ($)</span>
                     <input
                       type="number"
                       step="0.01"
                       value={plan.priceUSD.yearly}
                       onChange={(e) => handlePriceChange(plan.id, 'USD', 'yearly', parseFloat(e.target.value) || 0)}
-                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold"
+                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold focus:ring-2 focus:ring-purple-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -166,21 +241,21 @@ export default function AdminPricingPage() {
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Monthly (₹)</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">Monthly (₹)</span>
                     <input
                       type="number"
                       value={plan.priceINR.monthly}
                       onChange={(e) => handlePriceChange(plan.id, 'INR', 'monthly', parseInt(e.target.value, 10) || 0)}
-                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold"
+                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold focus:ring-2 focus:ring-purple-500 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Yearly / mo (₹)</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">Yearly / mo (₹)</span>
                     <input
                       type="number"
                       value={plan.priceINR.yearly}
                       onChange={(e) => handlePriceChange(plan.id, 'INR', 'yearly', parseInt(e.target.value, 10) || 0)}
-                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold"
+                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold focus:ring-2 focus:ring-purple-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -215,7 +290,7 @@ export default function AdminPricingPage() {
             <div className="pt-4 border-t border-slate-100">
               <span className="text-[11px] text-slate-400 flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                Live on checkout
+                Live on Homepage &amp; User Dashboard
               </span>
             </div>
           </div>

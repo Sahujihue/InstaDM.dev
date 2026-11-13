@@ -1,9 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useCurrency } from '@/context/CurrencyContext';
 import { INITIAL_PRICING_PLANS } from '@/lib/data';
+import { PricingPlan } from '@/types';
+import { getStoredPricingPlans, getStoredDiscountPercent } from '@/lib/pricing';
+import { getSupabaseClient } from '@/lib/supabase';
 import { 
   CreditCard, 
   Check, 
@@ -22,6 +25,24 @@ export default function BillingPage() {
   const { user, updateUserPlan } = useAuth();
   const { currency, setCurrency, isYearly, setIsYearly, formatPrice, allowManualSwitcher } = useCurrency();
   const [activePlan, setActivePlan] = useState(user?.plan || 'pro');
+  const [plans, setPlans] = useState<PricingPlan[]>(INITIAL_PRICING_PLANS);
+  const [discountPercent, setDiscountPercent] = useState<number>(17);
+
+  useEffect(() => {
+    setPlans(getStoredPricingPlans());
+    setDiscountPercent(getStoredDiscountPercent());
+
+    const handleUpdate = () => {
+      setPlans(getStoredPricingPlans());
+      setDiscountPercent(getStoredDiscountPercent());
+    };
+    window.addEventListener('instadm_pricing_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('instadm_pricing_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
 
   // Checkout modal state
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
@@ -121,7 +142,7 @@ export default function BillingPage() {
                 onClick={() => setIsYearly(true)}
                 className={`px-3 py-1 rounded-lg ${isYearly ? 'bg-purple-600 text-white' : 'text-slate-600'}`}
               >
-                Annual (Save 17%)
+                Annual (Save ~{discountPercent}%)
               </button>
             </div>
 
@@ -145,7 +166,7 @@ export default function BillingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {INITIAL_PRICING_PLANS.map((plan) => {
+          {plans.map((plan) => {
             const isCurrent = activePlan === plan.id;
             const price = currency === 'INR'
               ? (isYearly ? plan.priceINR.yearly : plan.priceINR.monthly)

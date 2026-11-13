@@ -1,13 +1,62 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCurrency } from '@/context/CurrencyContext';
 import { INITIAL_PRICING_PLANS } from '@/lib/data';
+import { PricingPlan } from '@/types';
 import { Check, Sparkles, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { getStoredPricingPlans, getStoredDiscountPercent } from '@/lib/pricing';
+import { getSupabaseClient } from '@/lib/supabase';
 
 export function PricingSection() {
   const { currency, setCurrency, isYearly, setIsYearly, formatPrice, allowManualSwitcher } = useCurrency();
+  const [plans, setPlans] = useState<PricingPlan[]>(INITIAL_PRICING_PLANS);
+  const [discountPercent, setDiscountPercent] = useState<number>(17);
+
+  useEffect(() => {
+    // 1. Initial hydration from local storage
+    const stored = getStoredPricingPlans();
+    const discount = getStoredDiscountPercent();
+    setPlans(stored);
+    setDiscountPercent(discount);
+
+    // 2. Fetch from Supabase cloud database if available
+    const fetchRemote = async () => {
+      try {
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const { data } = await supabase
+            .from('platform_settings')
+            .select('value')
+            .eq('key', 'pricing_plans')
+            .single();
+
+          if (data?.value?.plans && Array.isArray(data.value.plans)) {
+            setPlans(data.value.plans);
+            if (data.value.discount !== undefined) {
+              setDiscountPercent(data.value.discount);
+            }
+          }
+        }
+      } catch {}
+    };
+    fetchRemote();
+
+    // 3. Realtime event listener: updates instantly when admin changes prices!
+    const handleUpdate = () => {
+      setPlans(getStoredPricingPlans());
+      setDiscountPercent(getStoredDiscountPercent());
+    };
+
+    window.addEventListener('instadm_pricing_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+
+    return () => {
+      window.removeEventListener('instadm_pricing_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
 
   return (
     <section id="pricing" className="py-20 lg:py-28 bg-white relative overflow-hidden">
@@ -55,7 +104,7 @@ export function PricingSection() {
               >
                 <span>Annual Billing</span>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded font-extrabold ${isYearly ? 'bg-purple-800 text-amber-300' : 'bg-purple-100 text-purple-700'}`}>
-                  Save ~17%
+                  Save ~{discountPercent}%
                 </span>
               </button>
             </div>
@@ -95,7 +144,7 @@ export function PricingSection() {
 
         {/* 3 Pricing Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-12">
-          {INITIAL_PRICING_PLANS.map((plan) => {
+          {plans.map((plan) => {
             const price = currency === 'INR'
               ? (isYearly ? plan.priceINR.yearly : plan.priceINR.monthly)
               : (isYearly ? plan.priceUSD.yearly : plan.priceUSD.monthly);
@@ -145,7 +194,7 @@ export function PricingSection() {
 
                     <p className="text-[11px] text-slate-500 mt-1">
                       {isYearly
-                        ? `Billed annually (includes ~17% instant savings)`
+                        ? `Billed annually (includes ~${discountPercent}% instant savings)`
                         : 'Billed monthly, cancel anytime'}
                     </p>
                   </div>
@@ -158,9 +207,9 @@ export function PricingSection() {
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
                         <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                          isPro ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700'
+                          isPro ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'
                         }`}>
-                          <Check className="w-3 h-3" />
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </div>
                         <span>{feature}</span>
                       </div>
@@ -168,45 +217,28 @@ export function PricingSection() {
                   </div>
                 </div>
 
-                {/* Plan CTA Button */}
-                <div className="pt-2">
+                {/* Plan CTA */}
+                <div>
                   <Link
                     href={`/signup?plan=${plan.id}&billing=${isYearly ? 'yearly' : 'monthly'}`}
-                    className={`w-full py-3.5 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+                    className={`w-full py-3.5 px-6 rounded-2xl font-bold text-sm text-center flex items-center justify-center gap-2 transition-all ${
                       isPro
-                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-500/25'
-                        : 'bg-slate-900 hover:bg-purple-900 text-white shadow-sm'
+                        ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 text-white shadow-xl shadow-purple-600/30 hover:scale-[1.02]'
+                        : 'bg-slate-900 text-white hover:bg-slate-800'
                     }`}
                   >
-                    <span>Get Started with {plan.name}</span>
+                    <span>{plan.id === 'pro' ? 'Start Free Pro Trial' : `Get Started with ${plan.name}`}</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <p className="text-[11px] text-center text-slate-400 mt-2">
-                    Money-back guarantee • No credit card required to start
+
+                  <p className="text-center text-[11px] text-slate-400 mt-3 flex items-center justify-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Cancel anytime • 14-day money back guarantee</span>
                   </p>
                 </div>
               </div>
             );
           })}
-        </div>
-
-        {/* Safe billing guarantee */}
-        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center flex-shrink-0">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900">100% Risk-Free Money-Back Guarantee</p>
-              <p className="text-xs text-slate-600">If you don&apos;t generate more leads and save hours of time, we&apos;ll refund your subscription fee without hassle.</p>
-            </div>
-          </div>
-          <Link
-            href="/refund"
-            className="text-xs font-bold text-purple-600 hover:underline flex-shrink-0"
-          >
-            Read Refund Policy
-          </Link>
         </div>
 
       </div>
