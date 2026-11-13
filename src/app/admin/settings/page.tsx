@@ -1078,6 +1078,19 @@ CREATE TABLE IF NOT EXISTS public.users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.instagram_accounts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    instagram_id VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    profile_picture_url TEXT,
+    followers_count INTEGER DEFAULT 0,
+    media_count INTEGER DEFAULT 0,
+    access_token TEXT NOT NULL,
+    token_expires_at TIMESTAMP WITH TIME ZONE,
+    connected_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS public.automations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
@@ -1108,7 +1121,45 @@ CREATE TABLE IF NOT EXISTS public.referrals (
     status VARCHAR(50) DEFAULT 'TRIAL',
     commission_amount NUMERIC(10, 2) DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);`);
+);
+
+CREATE TABLE IF NOT EXISTS public.platform_settings (
+    key VARCHAR(100) PRIMARY KEY,
+    value JSONB NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS Security & Idempotent Policies
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.instagram_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.automations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.referrals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.platform_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public Users Access" ON public.users;
+DROP POLICY IF EXISTS "Public Access" ON public.users;
+CREATE POLICY "Public Users Access" ON public.users FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Accounts Access" ON public.instagram_accounts;
+DROP POLICY IF EXISTS "Public Access" ON public.instagram_accounts;
+CREATE POLICY "Public Accounts Access" ON public.instagram_accounts FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Automations Access" ON public.automations;
+DROP POLICY IF EXISTS "Public Access" ON public.automations;
+CREATE POLICY "Public Automations Access" ON public.automations FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Contacts Access" ON public.contacts;
+DROP POLICY IF EXISTS "Public Access" ON public.contacts;
+CREATE POLICY "Public Contacts Access" ON public.contacts FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Referrals Access" ON public.referrals;
+DROP POLICY IF EXISTS "Public Access" ON public.referrals;
+CREATE POLICY "Public Referrals Access" ON public.referrals FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Settings Access" ON public.platform_settings;
+DROP POLICY IF EXISTS "Public Access" ON public.platform_settings;
+CREATE POLICY "Public Settings Access" ON public.platform_settings FOR ALL USING (true) WITH CHECK (true);`);
                   setCopiedSql(true);
                   setTimeout(() => setCopiedSql(false), 2500);
                 }}
