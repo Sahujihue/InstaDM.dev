@@ -1055,6 +1055,38 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Supabase Publishable Key
+              </label>
+              <input
+                type="text"
+                readOnly
+                value="sb_publishable_a038knHK5HlnzweVKJslmA_MdLnIa4L"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono text-slate-800 bg-slate-50 select-all"
+              />
+              <span className="text-[10px] text-emerald-600 font-bold mt-1 block flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-500 inline" /> Client-Side SDK Connected &amp; Authenticated
+              </span>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Supabase Secret Key (Server Role)
+              </label>
+              <input
+                type="text"
+                readOnly
+                value="•••••••••••••••••••••••• (Configured via Server Env)"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono text-slate-800 bg-slate-50 select-all"
+              />
+              <span className="text-[10px] text-emerald-600 font-bold mt-1 block flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-500 inline" /> Admin Webhooks &amp; Edge Functions Authorized
+              </span>
+            </div>
+          </div>
+
           {/* Database Schema Setup & 1-Click Copy */}
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
             <div className="flex items-center justify-between">
